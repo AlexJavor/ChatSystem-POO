@@ -32,15 +32,16 @@ public class Receiver implements Runnable{
             
             byte[] buffer = new byte[256];
             DatagramPacket inPacket = new DatagramPacket(buffer, buffer.length);
-            
-            dgramSocket.receive(inPacket);
-            
-            InetAddress clientAddress = inPacket.getAddress();
-            int clientPort = inPacket.getPort();
-            
-            String message = new String(inPacket.getData(), 0, inPacket.getLength());
-            System.out.println("Message received from : " + clientAddress + " at port nb : " + clientPort);
-            System.out.println("Message says : " + message);
+            while(true){
+                dgramSocket.receive(inPacket);
+
+                InetAddress clientAddress = inPacket.getAddress();
+                int clientPort = inPacket.getPort();
+
+                String message = new String(inPacket.getData(), 0, inPacket.getLength());
+                System.out.println("Message received from : " + clientAddress + " at port nb : " + clientPort);
+                System.out.println("Message says : " + message);
+            }
             
         } catch (IOException e){
             System.out.println("ERROR : look at receiver ur fukd");

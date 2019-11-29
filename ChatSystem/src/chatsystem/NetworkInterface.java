@@ -16,19 +16,17 @@ public class NetworkInterface{
     private Receiver server;
     private Sender client;
     private Thread threadReceiver;
-    private Thread threadSender;
 
     
     public NetworkInterface(Receiver serv, Sender cli){
         this.server = serv;
         this.client = cli;
         this.threadReceiver = new Thread(this.server);
-        this.threadSender = new Thread(this.client);
         this.threadReceiver.start();
     }
     
     public void SendMessage(){
-        this.threadSender.start();
+        this.client.start();
     }
     
 }

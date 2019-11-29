@@ -11,14 +11,12 @@ import java.util.*;
  *
  * @author salinasg
  */
-public class Sender implements Runnable{
-    private String threadName;
+public class Sender{
     private InetAddress host;
     private int port;
     
     
-    public Sender(String name, String host, int port){
-        this.threadName = name;
+    public Sender(String host, int port){
         try{
             this.host = InetAddress.getByName(host);
         } catch (UnknownHostException e){
@@ -28,7 +26,7 @@ public class Sender implements Runnable{
         this.port = port;
     }
     
-    public void run(){
+    public void start(){
         try{
             System.out.println("Client started!");
             DatagramSocket dgramClient = new DatagramSocket();
