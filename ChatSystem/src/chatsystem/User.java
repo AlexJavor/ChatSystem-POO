@@ -34,6 +34,8 @@ public class User {
         }
     }
     
+    public String getPseudonym(){ return this.pseudonym; }
+    
     public void ChangePseudonym(String newPseudo){
         this.pseudonym = newPseudo;
     }
@@ -41,4 +43,6 @@ public class User {
     public void SendMessage(){
         this.netInterface.SendMessage();
     }
+    
+    public InetAddress getIPAddress() { return this.ipAddress; }
 }

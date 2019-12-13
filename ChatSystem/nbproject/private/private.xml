@@ -7,7 +7,10 @@
             <file>file:/home/salinasg/Bureau/ChatSystem/ChatSystem/src/chatsystem/NetworkInterface.java</file>
             <file>file:/home/salinasg/Bureau/ChatSystem/ChatSystem/src/chatsystem/Receiver.java</file>
             <file>file:/home/salinasg/Bureau/ChatSystem/ChatSystem/src/chatsystem/User.java</file>
+            <file>file:/home/salinasg/Bureau/ChatSystem/ChatSystem/src/chatsystem/ImageMessage.java</file>
             <file>file:/home/salinasg/Bureau/ChatSystem/ChatSystem/src/chatsystem/Sender.java</file>
+            <file>file:/home/salinasg/Bureau/ChatSystem/ChatSystem/src/chatsystem/Message.java</file>
+            <file>file:/home/salinasg/Bureau/ChatSystem/ChatSystem/src/chatsystem/TextMessage.java</file>
         </group>
     </open-files>
 </project-private>

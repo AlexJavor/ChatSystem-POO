@@ -16,8 +16,8 @@ public class ChatSystem {
      */
     public static void main(String[] args) {
         Receiver rcv = new Receiver("Receiver", 2077);
-        Sender snd = new Sender("10.1.5.17", 2077);
-        User usr = new User("Anthony", "10.1.5.139", rcv, snd);
+        Sender snd = new Sender("10.1.5.151", 2077, "Anthony");
+        User usr = new User("Anthony", "10.1.5.152", rcv, snd);
         usr.SendMessage();
         
     }
