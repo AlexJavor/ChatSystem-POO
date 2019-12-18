@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatsystem;
+package Messages;
 import java.net.*;
 import java.io.*;
 import java.util.*;
@@ -36,21 +36,21 @@ abstract public class Message {
      */
     public byte[] getBytesMessage(){
         // Creation of all the byte arrays used to create the full message
-        byte[] msgType = getBytesMsgType();
+        byte[] MsgTypeBytes = getBytesMsgType();
         byte[] msgPseudoSize = getBytesPseudonymSize();
         byte[] msgPseudo = getBytesPseudonym();
         byte[] msgPayloadSize = getBytesPayloadSize();
         byte[] msgPayload = this.payload;
         
         // Calculate the position of the field where the information should be written
-        int pseudoSizeStart = msgType.length;
+        int pseudoSizeStart = MsgTypeBytes.length;
         int pseudoStart = pseudoSizeStart + msgPseudoSize.length;
         int payloadSizeStart = pseudoStart + msgPseudo.length;
-        int payloadStart = payloadSizeStart + msgPayload.length;
+        int payloadStart = payloadSizeStart + msgPayloadSize.length;
         
         // Creation of the message in a byte buffer (by joining all the info)
         byte[] fullMsg = new byte[payloadStart + msgPayload.length];
-        System.arraycopy(msgType,        0, fullMsg, 0,                msgType.length       );
+        System.arraycopy(MsgTypeBytes,   0, fullMsg, 0,                MsgTypeBytes.length  );
         System.arraycopy(msgPseudoSize,  0, fullMsg, pseudoSizeStart,  msgPseudoSize.length );
         System.arraycopy(msgPseudo,      0, fullMsg, pseudoStart,      msgPseudo.length     );
         System.arraycopy(msgPayloadSize, 0, fullMsg, payloadSizeStart, msgPayloadSize.length);

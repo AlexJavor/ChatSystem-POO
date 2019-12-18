@@ -3,8 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatsystem;
-
+package NetworkInterface;
+import chatsystem.*;
 import java.net.*;
 import java.io.*;
 import java.util.*;
@@ -12,20 +12,24 @@ import java.util.*;
  *
  * @author salinasg
  */
-public class NetworkInterface{
+public class NetInterface{
     private Receiver server;
     private Sender client;
     private Thread threadReceiver;
 
     
-    public NetworkInterface(Receiver serv, Sender cli){
-        this.server = serv;
+    public NetInterface(Receiver serv, Sender cli){
         this.client = cli;
+        this.server = serv;
         this.threadReceiver = new Thread(this.server);
         this.threadReceiver.start();
     }
+    /*
+    public void NewSender(User activeUser){
+        
+    }*/
     
-    public void SendMessage(){
+    public void SendMessage() {
         this.client.start();
     }
     

@@ -4,7 +4,8 @@
  * and open the template in the editor.
  */
 package chatsystem;
-
+import NetworkInterface.*;
+import Messages.*;
 import java.net.*;
 import java.io.*;
 import java.util.*;
@@ -20,11 +21,11 @@ public class User {
     // Every User has its own IP address 
     private InetAddress ipAddress;
     
-    private NetworkInterface netInterface;
+    private NetInterface netInterface;
     
     public User(String pseudo, String ipAddr, Receiver rcv, Sender snd){
         this.pseudonym = pseudo;
-        this.netInterface = new NetworkInterface(rcv, snd);
+        this.netInterface = new NetInterface(rcv, snd);
         // TODO
         try{
             this.ipAddress = InetAddress.getByName(ipAddr);
@@ -40,7 +41,7 @@ public class User {
         this.pseudonym = newPseudo;
     }
     
-    public void SendMessage(){
+    public void SendMessage() {
         this.netInterface.SendMessage();
     }
     

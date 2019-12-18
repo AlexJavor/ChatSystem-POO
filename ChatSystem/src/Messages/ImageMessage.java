@@ -3,8 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatsystem;
-
+package Messages;
 import java.awt.image.BufferedImage;
 import java.net.*;
 import java.io.*;
@@ -17,15 +16,19 @@ import javax.imageio.ImageIO;
  */
 public class ImageMessage extends Message {
     
-    public ImageMessage(String pseudo, String path){
+    public ImageMessage(String pseudo, String path) throws Exception{
         super(pseudo);
+        this.msgType = 'i';
+        
         try{
             BufferedImage image = ImageIO.read(new File(path));
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ImageIO.write(image, "jpg", byteArrayOutputStream);
-        } catch (Exception e){
+            this.payloadSize = byteArrayOutputStream.size();
+            this.payload = byteArrayOutputStream.toByteArray();            
+        } catch (IOException e){
             System.out.println("ERROR : look at ImageMessage - " + e);
-            System.exit(1);
+            throw(e);
         }
     }
     

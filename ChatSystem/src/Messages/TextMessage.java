@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatsystem;
+package Messages;
 
 import java.net.*;
 import java.io.*;
