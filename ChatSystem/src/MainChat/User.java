@@ -3,30 +3,26 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatsystem;
+package MainChat;
 import NetworkInterface.*;
 import Messages.*;
 import java.net.*;
 import java.io.*;
 import java.util.*;
 
+
 /**
  *
  * @author salinasg
  */
 public class User {
-    // Each User has a pseudonym that can be changed at any time
+    // Each User has a pseudonym that can be changed at any time and Every User has its own IP address 
     private String pseudonym;
-    
-    // Every User has its own IP address 
     private InetAddress ipAddress;
-    
     private NetInterface netInterface;
     
-    public User(String pseudo, String ipAddr, Receiver rcv, Sender snd){
+    public User(String pseudo, String ipAddr){
         this.pseudonym = pseudo;
-        this.netInterface = new NetInterface(rcv, snd);
-        // TODO
         try{
             this.ipAddress = InetAddress.getByName(ipAddr);
         } catch (UnknownHostException e) {
@@ -36,14 +32,9 @@ public class User {
     }
     
     public String getPseudonym(){ return this.pseudonym; }
+    public InetAddress getIPAddress() { return this.ipAddress; }
     
     public void ChangePseudonym(String newPseudo){
         this.pseudonym = newPseudo;
     }
-    
-    public void SendMessage() {
-        this.netInterface.SendMessage();
-    }
-    
-    public InetAddress getIPAddress() { return this.ipAddress; }
 }

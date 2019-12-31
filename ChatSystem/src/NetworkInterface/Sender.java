@@ -5,6 +5,7 @@
  */
 package NetworkInterface;
 
+import MainChat.*;
 import Messages.*;
 import java.net.*;
 import java.io.*;
@@ -17,10 +18,10 @@ import java.nio.*;
 public class Sender{
     private InetAddress host;
     private int port;
-    private String pseudonym;
+    private String myPseudonym;
     private InetAddress userIP;
     
-    public Sender(String host, int port, String pseudo){
+    public Sender(String host, int port, String myPseudo){
         try{
             this.host = InetAddress.getByName(host);
         } catch (UnknownHostException e){
@@ -28,7 +29,7 @@ public class Sender{
             System.exit(1);
         }
         this.port = port;
-        this.pseudonym = pseudo;
+        this.myPseudonym = myPseudo;
     }
     
     public void start(){
@@ -46,12 +47,11 @@ public class Sender{
                             bufferRead = new BufferedReader(new InputStreamReader(System.in));
                             String message = bufferRead.readLine();
                             
-                            TextMessage txtMsg = new TextMessage(this.pseudonym, message);
+                            TextMessage txtMsg = new TextMessage(this.myPseudonym, message);
                             byteMsg = txtMsg.getBytesMessage();
                             break;
                         case "i":
-                            ImageMessage imMsg = new ImageMessage(this.pseudonym, "/home/salinasg/Bureau/ImageSend/img2.jpg");
-                            
+                            ImageMessage imMsg = new ImageMessage(this.myPseudonym, "/home/salinasg/Bureau/ImageSend/img2.jpg");
                             byteMsg = imMsg.getBytesMessage();
                             break;
                         default :
@@ -68,7 +68,7 @@ public class Sender{
                     outStream.write(byteText);
                     outStream.flush();*/
                     
-                    //TextMessage textMsg = new TextMessage(this.pseudonym, text);
+                    //TextMessage textMsg = new TextMessage(this.myPseudonym, text);
                     
                     outStream.write(byteMsg);
                     outStream.flush();

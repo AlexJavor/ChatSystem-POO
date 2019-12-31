@@ -5,11 +5,10 @@
  */
 package NetworkInterface;
 
+import MainChat.User;
 import java.net.*;
-import java.io.IOException;
-import java.net.DatagramPacket;
-
-import java.net.MulticastSocket;
+import java.io.*;
+import java.net.*;
 
 /**
  *
@@ -18,18 +17,35 @@ import java.net.MulticastSocket;
 public class MulticastSender {
    
     private DatagramSocket socket;
-    private InetAddress group;
     private byte[] buf;
+    private InetAddress group;
+    private int port;
+    private String multicastMsg;
+    
+    
+    public MulticastSender(String groupIP, int port, User usr){
+        try{
+            this.group = InetAddress.getByName(groupIP);
+        } catch (UnknownHostException e){
+            System.out.println("ERROR : look at multicastreceiver");
+            System.exit(1);
+        }
+        this.port = port;
+        this.multicastMsg = "Pseudonym:" + usr.getPseudonym() + ":IP address:" + usr.getIPAddress();
+    }
  
-    public void multicast(
-      String multicastMessage) throws IOException {
-        socket = new DatagramSocket();
-        group = InetAddress.getByName("230.0.0.0");
-        buf = multicastMessage.getBytes();
- 
-        DatagramPacket packet 
-          = new DatagramPacket(buf, buf.length, group, 4446);
-        socket.send(packet);
-        socket.close();
+    public void multicast(){
+        System.setProperty("java.net.preferIPv4Stack", "true");
+        try{
+            MulticastSocket socket = new MulticastSocket();
+            byte[] buf = this.multicastMsg.getBytes();
+
+            DatagramPacket packet = new DatagramPacket(buf, buf.length, this.group, this.port);
+            socket.send(packet);
+            socket.close();
+        } catch(IOException e){
+            System.out.println("ERROR : look at sender");
+            System.exit(1);
+        }
     }
 }

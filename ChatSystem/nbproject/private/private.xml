@@ -3,14 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/salinasg/Bureau/ChatSystem/ChatSystem/src/chatsystem/ChatSystem.java</file>
-            <file>file:/home/salinasg/Bureau/ChatSystem/ChatSystem/src/NetworkInterface/Sender.java</file>
-            <file>file:/home/salinasg/Bureau/ChatSystem/ChatSystem/src/chatsystem/User.java</file>
-            <file>file:/home/salinasg/Bureau/ChatSystem/ChatSystem/src/Messages/FileMessage.java</file>
-            <file>file:/home/salinasg/Bureau/ChatSystem/ChatSystem/src/NetworkInterface/NetInterface.java</file>
-            <file>file:/home/salinasg/Bureau/ChatSystem/ChatSystem/src/NetworkInterface/MulticastReceiver.java</file>
-            <file>file:/home/salinasg/Bureau/ChatSystem/ChatSystem/src/History/OpenHistory.java</file>
-            <file>file:/home/salinasg/Bureau/ChatSystem/ChatSystem/src/NetworkInterface/Receiver.java</file>
+            <file>file:/home/alexjavor/Desktop/INSA/4emeAnnee/ChatSystem-POO/ChatSystem/src/NetworkInterface/Receiver.java</file>
+            <file>file:/home/alexjavor/Desktop/INSA/4emeAnnee/ChatSystem-POO/ChatSystem/src/NetworkInterface/MulticastReceiver.java</file>
+            <file>file:/home/alexjavor/Desktop/INSA/4emeAnnee/ChatSystem-POO/ChatSystem/src/NetworkInterface/Sender.java</file>
+            <file>file:/home/alexjavor/Desktop/INSA/4emeAnnee/ChatSystem-POO/ChatSystem/src/MainChat/User.java</file>
+            <file>file:/home/alexjavor/Desktop/INSA/4emeAnnee/ChatSystem-POO/ChatSystem/src/MainChat/ChatSystem.java</file>
+            <file>file:/home/alexjavor/Desktop/INSA/4emeAnnee/ChatSystem-POO/ChatSystem/src/NetworkInterface/MulticastSender.java</file>
         </group>
     </open-files>
 </project-private>
