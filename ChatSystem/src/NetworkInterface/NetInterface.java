@@ -26,15 +26,26 @@ public class NetInterface{
         this.server = serv;
         this.multiRcv = multiRcv;
         this.multiSnd = multiSnd;
-        this.threadReceiver = new Thread(this.server);
-        this.threadReceiver.start();
-        this.threadMulticastReceiver = new Thread(this.multiRcv);
-        this.threadMulticastReceiver.start();
+        startReceiver();
+        startMulticastReceiver();
     }
     /*
     public void NewSender(User activeUser){
         
     }*/
+    
+    private void startReceiver(){
+        this.threadReceiver = new Thread(this.server);
+        this.threadReceiver.setName("Receiver");
+        this.threadReceiver.start();
+    }
+    
+    private void startMulticastReceiver(){
+        this.threadMulticastReceiver = new Thread(this.multiRcv);
+        this.threadReceiver.setName("MulticastReceiver");
+        this.threadMulticastReceiver.start();
+    }
+    
     public void BroadcastMessage(){
         this.multiSnd.multicast();
     }

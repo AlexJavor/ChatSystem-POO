@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package MainChat;
-import NetworkInterface.*;
 import Messages.*;
 import java.net.*;
 import java.io.*;
@@ -19,22 +18,23 @@ public class User {
     // Each User has a pseudonym that can be changed at any time and Every User has its own IP address 
     private String pseudonym;
     private InetAddress ipAddress;
-    private NetInterface netInterface;
+    private final String macAddress;
     
-    public User(String pseudo, String ipAddr){
+    public User(String pseudo, InetAddress ipAddr, String macAddr){
         this.pseudonym = pseudo;
-        try{
-            this.ipAddress = InetAddress.getByName(ipAddr);
-        } catch (UnknownHostException e) {
-            System.out.println("ERROR : This host doesn't exist");
-            System.exit(1);
-        }
+        this.ipAddress = ipAddr;
+        this.macAddress = macAddr;
     }
     
     public String getPseudonym(){ return this.pseudonym; }
     public InetAddress getIPAddress() { return this.ipAddress; }
+    public String getMACAddress(){ return this.macAddress; }
     
     public void ChangePseudonym(String newPseudo){
         this.pseudonym = newPseudo;
+    }
+    
+    public String toString(){
+        return "Pseudonym : " + this.pseudonym + " - IP Address : " + this.ipAddress + " - MAC Address : " + this.macAddress;
     }
 }

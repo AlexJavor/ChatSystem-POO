@@ -25,7 +25,7 @@ public class Sender{
         try{
             this.host = InetAddress.getByName(host);
         } catch (UnknownHostException e){
-            System.out.println("ERROR : look at sender");
+            System.out.println("ERROR : look at sender host exception" + e);
             System.exit(1);
         }
         this.port = port;

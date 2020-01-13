@@ -20,6 +20,7 @@ public class MulticastSender {
     private byte[] buf;
     private InetAddress group;
     private int port;
+    private User user;
     private String multicastMsg;
     
     
@@ -27,11 +28,21 @@ public class MulticastSender {
         try{
             this.group = InetAddress.getByName(groupIP);
         } catch (UnknownHostException e){
-            System.out.println("ERROR : look at multicastreceiver");
+            System.out.println("ERROR : look at multicastsender");
             System.exit(1);
         }
         this.port = port;
-        this.multicastMsg = "Pseudonym:" + usr.getPseudonym() + ":IP address:" + usr.getIPAddress();
+        this.user = usr;
+        // Defalut message is hello world
+        HelloEveryone();
+    }
+    
+    public final void HelloEveryone(){
+        this.multicastMsg = "Status ACTIVE. Pseudonym-" + this.user.getPseudonym() + "-IP address-" + this.user.getIPAddress() + "-MAC Address-" + this.user.getMACAddress();
+    }
+    
+    public final void ByeEveryone(){
+        this.multicastMsg = "Bye World! I am now INACTIVE.";
     }
  
     public void multicast(){
@@ -44,7 +55,7 @@ public class MulticastSender {
             socket.send(packet);
             socket.close();
         } catch(IOException e){
-            System.out.println("ERROR : look at sender");
+            System.out.println("ERROR : look at multicastsender - " + e);
             System.exit(1);
         }
     }

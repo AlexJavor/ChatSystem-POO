@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 package NetworkInterface;
+import MainChat.*;
+import static MainChat.ChatSystem.repeatedPseudo;
 import java.net.*;
 import java.io.*;
 import java.util.*;
@@ -18,12 +20,14 @@ import javax.imageio.ImageIO;
  * @author salinasg
  */
 public class Receiver implements Runnable{
-    private String threadName;
     private int port;
+    private ActiveUsers activeUserList;
+    private String myPseudonym;
     
-    public Receiver(String name, int port){
-        this.threadName = name;
+    public Receiver(int port, ActiveUsers activeUserList, String myPseudo){
         this.port = port;
+        this.activeUserList = activeUserList;
+        this.myPseudonym = myPseudo;
     }
     
     /**
@@ -31,46 +35,45 @@ public class Receiver implements Runnable{
     * on le ferme. 
     */
     public void run(){
-        
         try{
             ServerSocket servSocket = new ServerSocket(this.port);
-            while(true){
+            while(!repeatedPseudo){
                 Socket socket = servSocket.accept();
                 InputStream inStream = socket.getInputStream();
-                
+
                 // **** Receiving Type Message **** //
                 byte[] msgType = new byte[2];
                 inStream.read(msgType);
                 char messageType = ByteBuffer.wrap(msgType).asCharBuffer().get();
                 //System.out.println("MessageType: " + messageType);
-                
+
                 // **** Receiving Pseudonym Size **** //
                 byte[] sizeBytePseudo = new byte[4];
                 inStream.read(sizeBytePseudo);
                 int sizePseudo = ByteBuffer.wrap(sizeBytePseudo).asIntBuffer().get();
                 //System.out.println("Pseudonym Size: " + sizePseudo);
-                
+
                 // **** Receiving Pseudonym **** //
                 byte[] bytePseudo = new byte[sizePseudo];
                 inStream.read(bytePseudo);
                 String stringPseudo = new String(bytePseudo);
                 //System.out.println("Pseudonym: " + stringPseudo);
-                
+
                 // **** Receiving Payload Size **** //
                 byte[] sizeBytePayload = new byte[4];
                 inStream.read(sizeBytePayload);
                 int sizePayload = ByteBuffer.wrap(sizeBytePayload).asIntBuffer().get();
                 //System.out.println("Text Payload Size: " + sizePayload);
-                
+
                 // **** Receiving Payload (Text Message) **** //
                 byte[] bytePayload = new byte[sizePayload];
-                
+
                 int totalRead = 0;
                 int currentRead = 0;
                 while (totalRead < sizePayload && (currentRead = inStream.read(bytePayload, totalRead, sizePayload-totalRead)) > 0) {
                     totalRead += currentRead;
                 }
-                
+
                 switch (messageType) {
                     case 't':
                         String stringText = new String(bytePayload);
@@ -88,8 +91,19 @@ public class Receiver implements Runnable{
                     case 'f':
                         System.out.println("Receiving file message");
                         break;
-                    case 'b':
-                        System.out.println("Receiving begin message");
+                    case 's':
+                        //System.out.println("Receiving status message");
+                        String stringStatus = new String(bytePayload);
+                        //System.out.println(stringPseudo + ":" + stringStatus);
+                        String[] newUserInfo = stringStatus.split("-");
+                        // Adding new user to active user list if its pseudo is not the same. If it is change notify to the main thread.
+                        if(stringPseudo.equals(this.myPseudonym)){
+                            ChatSystem.repeatedPseudo = true;
+                            //System.out.println("Pseudos equals ! OUT!");
+                        } else {
+                            this.activeUserList.addActiveUser(new User(stringPseudo, socket.getInetAddress(), newUserInfo[1]));
+                        }
+                        System.out.println(activeUserList.toString());
                         break;
                     case 'e':
                         System.out.println("Receiving end message");
@@ -100,6 +114,7 @@ public class Receiver implements Runnable{
                 }
                 socket.close();
             }
+            servSocket.close();
             
         } catch (IOException e){
             System.out.println("ERROR : look at receiver - " + e);
