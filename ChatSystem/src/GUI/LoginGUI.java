@@ -5,11 +5,10 @@
  */
 package GUI;
 
+
 import static MainChat.ChatSystem.*;
 import javax.swing.*;
 import java.awt.event.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -21,7 +20,6 @@ public class LoginGUI extends JFrame implements ActionListener {
     private JLabel welcomeLabel1;
     private JLabel requestLabel1;
     private JTextField textfield;
-    private String myPseudonym;
     
     public LoginGUI() {
         super("Chat System v0.2");
@@ -34,7 +32,7 @@ public class LoginGUI extends JFrame implements ActionListener {
         InitializeLoginGUI();
     }
     // Getters
-    public String getPseudonymFromInput() { return this.myPseudonym; }
+    public String getPseudonymFromInput() { return myUser.getPseudonym(); }
     
     /**
      * InitializeGUI
@@ -64,20 +62,19 @@ public class LoginGUI extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent event){
         //If you click the send button or tap "enter" you will perform the action 
         if(event.getSource() == confirmButton1 || event.getSource() == textfield){
-            this.myPseudonym = textfield.getText();
+            myUser.setPseudonym(textfield.getText());
             try {
                 // Waiting to receive all conections (it can change)
                 Thread.sleep(400);
             } catch (InterruptedException ex) {}
             if(repeatedPseudo){
-                JOptionPane.showMessageDialog(null, "Pseudonym already in use, please choose another one:");
+                JOptionPane.showMessageDialog(null, "Pseudonym already in use, please choose another one");
                 textfield.setText("");
-                this.myPseudonym = null;
+                myUser.setPseudonym(null);
             } else {
-                new ChatGUI(this.myPseudonym).setVisible(true);
+                new ChatGUI().setVisible(true);
                 setVisible(false); 
             }
         }
     }
-    
 }

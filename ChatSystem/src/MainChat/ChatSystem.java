@@ -17,60 +17,63 @@ public class ChatSystem {
 
     /**
      * @param args the command line arguments
-     */ 
+     */
+    private static final int unicastPort = 2077;
+    private static final int multicastPort = 1138;
+    private static final String multicastAddr = "225.192.0.1";
+    
     public static boolean repeatedPseudo = true;
-    public static int attempt = 0;
-
+    public static User myUser = null;
     
     public static void main(String[] args) {
         try{
-            // Get IP and MAC Addresses
-            //InetAddress myIpAddr = getLocalAddress();
+            // *** Create current user with the obtained Pseudonym, IP Address and MAC Address *** //
+            // myPseudonym null when starting
+            String myPseudonym = null;
+            //InetAddress myIpAddr = getMyLocalIPAddress();
             InetAddress myIpAddr = InetAddress.getByName("192.168.1.1"); // Tested locally
-            String myMacAddr = getMacAddress(myIpAddr);
-            System.out.println("System IP Address : " + (myIpAddr.getHostAddress()).trim());
+            String myMacAddr = getMyMacAddress(myIpAddr);
+          
+            myUser = new User(myPseudonym, myIpAddr, myMacAddr);
+            
+            System.out.println("System IP Address  : " + (myIpAddr.getHostAddress()).trim());
+            System.out.println("System MAC Address : " + myMacAddr);
             
             // Start GUI
             LoginGUI UI = new LoginGUI();
             UI.setVisible(true);
             
-            User usr;
-            ActiveUsers activeUserList;
-            Receiver rcv;
-            Sender snd;
-            MulticastReceiver multiRcv;
-            MulticastSender multiSnd;
+            // Define netInterface
             NetInterface netInterface = null;
+            
+            int attemptNumber = 0;
             
             while(repeatedPseudo){
                 // We set it by default to false. If it is true it will be changed before finishing the loop
                 repeatedPseudo = false;
                 // Counting attempts
-                attempt++;
-                System.out.println("\nChecking pseudonym - attmept number " + attempt);
+                attemptNumber++;
+                System.out.println("\nChecking pseudonym - attmept number " + attemptNumber);
                 
                 //Get pseudonym from GUI
-                String myPseudonym = UI.getPseudonymFromInput();
-               
+                myPseudonym = UI.getPseudonymFromInput();
+                // Wait until a pseudo is introduced
                 while(myPseudonym == null){
                     myPseudonym = UI.getPseudonymFromInput();
                     Thread.sleep(1);
                 }
-                
                 System.out.println("New pseudo: " + myPseudonym);
                         
-                // Create current user with the obtained Pseudonym, IP Address and MAC Address
-                usr = new User(myPseudonym, myIpAddr, myMacAddr);
 
-                activeUserList = new ActiveUsers();
+               // The first attempt you create everything, after that we just change the pseudonym
+                if(attemptNumber == 1){
+                    // Create network interface
+                    netInterface = new NetInterface(myUser, unicastPort, multicastAddr, multicastPort);  
+                }
+                myUser.setPseudonym(myPseudonym);
                 
-                rcv = new Receiver(2077, activeUserList, usr.getPseudonym());
-                multiRcv = new MulticastReceiver("225.192.0.1", 1138, usr, activeUserList);
-                snd = new Sender("192.168.1.2", 2077, usr.getPseudonym());
-                multiSnd = new MulticastSender("225.192.0.1", 1138, usr);
-
-                netInterface = new NetInterface(rcv, snd, multiRcv, multiSnd);  
-                netInterface.BroadcastMessage();
+                // Send my user's Pseudonym, IP Address and MAC Address to all active users
+                netInterface.sendMulticastMessage("online");
                 
                 
                 // Waiting to receive all conections (it can change)
@@ -89,14 +92,10 @@ public class ChatSystem {
                 System.out.println("End while");
                 //netInterface.SendMessage();
             }
-            
-            
         } catch (InterruptedException | UnknownHostException e) {}
-
-
     }
     
-    public static InetAddress getLocalAddress() throws SocketException {
+    public static InetAddress getMyLocalIPAddress() throws SocketException {
         Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();
         while( ifaces.hasMoreElements() )
         {
@@ -112,12 +111,10 @@ public class ChatSystem {
               }
             }
         }
-
         return null;
     }
    
-    
-    private static String getMacAddress(InetAddress myIpAddr){
+    private static String getMyMacAddress(InetAddress myIpAddr){
         StringBuilder sb = new StringBuilder();
         try{
             NetworkInterface network = NetworkInterface.getByInetAddress(myIpAddr);
@@ -130,9 +127,5 @@ public class ChatSystem {
             
         } catch (Exception e) {e.printStackTrace();}
         return sb.toString();
-    }
-
-    private static void getThreadReceiver() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

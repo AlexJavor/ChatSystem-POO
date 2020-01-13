@@ -5,37 +5,45 @@
  */
 package NetworkInterface;
 import MainChat.*;
-import java.net.*;
-import java.io.*;
-import java.util.*;
+import static MainChat.ChatSystem.myUser;
 /**
  *
  * @author salinasg
  */
 public class NetInterface{
-    private Receiver server;
-    private Sender client;
+    
+    private int unicastPort;
+    private String multicastAddr;
+    private int multicastPort;
+    
+    private ActiveUsers activeUserList;
+    private Receiver rcv;
     private MulticastReceiver multiRcv;
     private MulticastSender multiSnd;
     private Thread threadReceiver;
     private Thread threadMulticastReceiver;
 
     
-    public NetInterface(Receiver serv, Sender cli, MulticastReceiver multiRcv ,MulticastSender multiSnd){
-        this.client = cli;
-        this.server = serv;
-        this.multiRcv = multiRcv;
-        this.multiSnd = multiSnd;
+    public NetInterface(User usr, int unicastPort, String multicastAddr, int multicastPort){
+        
+        this.unicastPort = unicastPort;
+        this.multicastAddr = multicastAddr;
+        this.multicastPort = multicastPort;
+        
+        this.activeUserList = new ActiveUsers();
+        this.rcv = new Receiver(this.unicastPort, activeUserList);
+        this.multiSnd = new MulticastSender(this.multicastAddr, this.multicastPort);
+        this.multiRcv = new MulticastReceiver(this.multicastAddr, this.multicastPort, activeUserList, this.unicastPort);
         startReceiver();
         startMulticastReceiver();
     }
-    /*
-    public void NewSender(User activeUser){
-        
-    }*/
     
+    // Getters
+    public ActiveUsers getActiveUsers() { return this.activeUserList; }
+    
+    // Methods
     private void startReceiver(){
-        this.threadReceiver = new Thread(this.server);
+        this.threadReceiver = new Thread(this.rcv);
         this.threadReceiver.setName("Receiver");
         this.threadReceiver.start();
     }
@@ -46,12 +54,11 @@ public class NetInterface{
         this.threadMulticastReceiver.start();
     }
     
-    public void BroadcastMessage(){
-        this.multiSnd.multicast();
+    public void sendMulticastMessage(String status){
+        this.multiSnd.Send(status);
     }
     
-    public void SendMessage() {
-        this.client.start();
+    public void sendMessageToUser(Sender snd) {
+        snd.send();
     }
-    
 }

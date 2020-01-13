@@ -5,6 +5,7 @@
  */
 package NetworkInterface;
 
+import static MainChat.ChatSystem.myUser;
 import MainChat.User;
 import java.net.*;
 import java.io.*;
@@ -20,11 +21,10 @@ public class MulticastSender {
     private byte[] buf;
     private InetAddress group;
     private int port;
-    private User user;
     private String multicastMsg;
     
     
-    public MulticastSender(String groupIP, int port, User usr){
+    public MulticastSender(String groupIP, int port){
         try{
             this.group = InetAddress.getByName(groupIP);
         } catch (UnknownHostException e){
@@ -32,20 +32,27 @@ public class MulticastSender {
             System.exit(1);
         }
         this.port = port;
-        this.user = usr;
         // Defalut message is hello world
-        HelloEveryone();
+        CurrentActiveStatus();
     }
     
-    public final void HelloEveryone(){
-        this.multicastMsg = "Status ACTIVE. Pseudonym-" + this.user.getPseudonym() + "-IP address-" + this.user.getIPAddress() + "-MAC Address-" + this.user.getMACAddress();
+    public final void CurrentActiveStatus(){
+        this.multicastMsg = "Status ACTIVE. Pseudonym-" + myUser.getPseudonym() + "-IP address-" + myUser.getIPAddress() + "-MAC Address-" + myUser.getMACAddress();
     }
     
-    public final void ByeEveryone(){
-        this.multicastMsg = "Bye World! I am now INACTIVE.";
+    public final void Disconnecting(){
+        this.multicastMsg = "Status INACTIVE.";
     }
  
-    public void multicast(){
+    public void Send(String status){
+        switch(status){
+            case "online":
+                CurrentActiveStatus();
+                break;
+            case "offline":
+                Disconnecting();
+                break;                  
+        }        
         System.setProperty("java.net.preferIPv4Stack", "true");
         try{
             MulticastSocket socket = new MulticastSocket();

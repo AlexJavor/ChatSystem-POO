@@ -5,6 +5,7 @@
  */
 package GUI;
 
+import static MainChat.ChatSystem.myUser;
 import javax.swing.*;
 import java.awt.event.*;
 /**
@@ -18,11 +19,11 @@ public class ChatGUI extends JFrame implements ActionListener {
      * @param myPseudo
      */
     
-    public ChatGUI(String myPseudo){
+    public ChatGUI(){
         super("Chat System v0.2");
         initComponents();
         setLocationRelativeTo(null);
-        myPsudonym.setText(myPseudo);
+        myPsudonym.setText(myUser.getPseudonym());
     }
     
     @Override

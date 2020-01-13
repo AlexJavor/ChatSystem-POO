@@ -5,6 +5,7 @@
  */
 package NetworkInterface;
 import MainChat.*;
+import static MainChat.ChatSystem.myUser;
 import static MainChat.ChatSystem.repeatedPseudo;
 import java.net.*;
 import java.io.*;
@@ -22,12 +23,10 @@ import javax.imageio.ImageIO;
 public class Receiver implements Runnable{
     private int port;
     private ActiveUsers activeUserList;
-    private String myPseudonym;
     
-    public Receiver(int port, ActiveUsers activeUserList, String myPseudo){
+    public Receiver(int port, ActiveUsers activeUserList){
         this.port = port;
         this.activeUserList = activeUserList;
-        this.myPseudonym = myPseudo;
     }
     
     /**
@@ -37,7 +36,7 @@ public class Receiver implements Runnable{
     public void run(){
         try{
             ServerSocket servSocket = new ServerSocket(this.port);
-            while(!repeatedPseudo){
+            while(true){
                 Socket socket = servSocket.accept();
                 InputStream inStream = socket.getInputStream();
 
@@ -97,8 +96,8 @@ public class Receiver implements Runnable{
                         //System.out.println(stringPseudo + ":" + stringStatus);
                         String[] newUserInfo = stringStatus.split("-");
                         // Adding new user to active user list if its pseudo is not the same. If it is change notify to the main thread.
-                        if(stringPseudo.equals(this.myPseudonym)){
-                            ChatSystem.repeatedPseudo = true;
+                        if(stringPseudo.equals(myUser.getPseudonym())){
+                            repeatedPseudo = true;
                             //System.out.println("Pseudos equals ! OUT!");
                         } else {
                             this.activeUserList.addActiveUser(new User(stringPseudo, socket.getInetAddress(), newUserInfo[1]));
@@ -114,8 +113,7 @@ public class Receiver implements Runnable{
                 }
                 socket.close();
             }
-            servSocket.close();
-            
+            //servSocket.close();       
         } catch (IOException e){
             System.out.println("ERROR : look at receiver - " + e);
             System.exit(1);

@@ -5,12 +5,11 @@
  */
 package NetworkInterface;
 
-import MainChat.*;
+import static MainChat.ChatSystem.myUser;
+import MainChat.User;
 import Messages.*;
 import java.net.*;
 import java.io.*;
-import java.util.*;
-import java.nio.*;
 /**
  *
  * @author salinasg
@@ -18,21 +17,13 @@ import java.nio.*;
 public class Sender{
     private InetAddress host;
     private int port;
-    private String myPseudonym;
-    private InetAddress userIP;
     
-    public Sender(String host, int port, String myPseudo){
-        try{
-            this.host = InetAddress.getByName(host);
-        } catch (UnknownHostException e){
-            System.out.println("ERROR : look at sender host exception" + e);
-            System.exit(1);
-        }
+    public Sender(InetAddress host, int port){
+        this.host = host;
         this.port = port;
-        this.myPseudonym = myPseudo;
     }
     
-    public void start(){
+    public void send(){
         try{
             while(true){
                 BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
@@ -47,28 +38,16 @@ public class Sender{
                             bufferRead = new BufferedReader(new InputStreamReader(System.in));
                             String message = bufferRead.readLine();
                             
-                            TextMessage txtMsg = new TextMessage(this.myPseudonym, message);
+                            TextMessage txtMsg = new TextMessage(myUser.getPseudonym(), message);
                             byteMsg = txtMsg.getBytesMessage();
                             break;
                         case "i":
-                            ImageMessage imMsg = new ImageMessage(this.myPseudonym, "/home/salinasg/Bureau/ImageSend/img2.jpg");
+                            ImageMessage imMsg = new ImageMessage(myUser.getPseudonym(), "/home/salinasg/Bureau/ImageSend/img2.jpg");
                             byteMsg = imMsg.getBytesMessage();
                             break;
                         default :
                             byteMsg = new byte[1];
                     }
-                    // Send message type
-                    /*byte[] msgType = ByteBuffer.allocate(2).putChar('t').array();
-                    outStream.write(msgType);
-                    outStream.flush();
-                    
-                    byte[] byteText = text.getBytes();
-                    byte[] sizeText = ByteBuffer.allocate(4).putInt(text.length()).array();
-                    outStream.write(sizeText);
-                    outStream.write(byteText);
-                    outStream.flush();*/
-                    
-                    //TextMessage textMsg = new TextMessage(this.myPseudonym, text);
                     
                     outStream.write(byteMsg);
                     outStream.flush();
@@ -78,31 +57,10 @@ public class Sender{
                     System.exit(1);
                 }
             }
-            
+          
         } catch(Exception e){
             System.out.println("ERROR : look at sender - " + e);
             System.exit(1);
         }
-        
-        
-        /****** UDP version ******
-        try{
-            System.out.println("Client started!");
-            DatagramSocket dgramClient = new DatagramSocket();
-            
-            String message = "Bonjour Server!";
-            DatagramPacket outPacket = new DatagramPacket(message.getBytes(), message.length(), this.host, this.port);
-            dgramClient.send(outPacket);
-            System.out.println("Message sent!");
-            
-            dgramClient.close();
-            
-        } catch(IOException e){
-            System.out.println("ERROR : look at sender");
-            System.exit(1);
-        }
-        * **************************/
-        
-        
     }
 }

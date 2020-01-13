@@ -26,13 +26,13 @@ public class User {
         this.macAddress = macAddr;
     }
     
+    // Getters
     public String getPseudonym(){ return this.pseudonym; }
     public InetAddress getIPAddress() { return this.ipAddress; }
     public String getMACAddress(){ return this.macAddress; }
     
-    public void ChangePseudonym(String newPseudo){
-        this.pseudonym = newPseudo;
-    }
+    // Setters
+    public void setPseudonym(String newPseudo){ this.pseudonym = newPseudo; }
     
     public String toString(){
         return "Pseudonym : " + this.pseudonym + " - IP Address : " + this.ipAddress + " - MAC Address : " + this.macAddress;
