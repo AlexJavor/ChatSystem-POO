@@ -26,6 +26,14 @@ public class User {
         this.macAddress = macAddr;
     }
     
+    public User(String pseudo, String ipAddr, String macAddr){
+        this.pseudonym = pseudo;
+        try {
+            this.ipAddress = InetAddress.getByName(ipAddr);
+        } catch (UnknownHostException e) {}
+        this.macAddress = macAddr;
+    }
+    
     // Getters
     public String getPseudonym(){ return this.pseudonym; }
     public InetAddress getIPAddress() { return this.ipAddress; }

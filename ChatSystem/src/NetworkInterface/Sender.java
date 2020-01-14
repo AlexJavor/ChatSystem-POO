@@ -7,9 +7,13 @@ package NetworkInterface;
 
 import static MainChat.ChatSystem.myUser;
 import MainChat.User;
+import HistoryLogs.*;
 import Messages.*;
 import java.net.*;
 import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 /**
  *
  * @author salinasg
@@ -17,10 +21,12 @@ import java.io.*;
 public class Sender{
     private InetAddress host;
     private int port;
+    private final ActiveUsers activeUserList;
     
-    public Sender(InetAddress host, int port){
+    public Sender(InetAddress host, int port, ActiveUsers au){
         this.host = host;
         this.port = port;
+        this.activeUserList = au;
     }
     
     public void send(){
@@ -32,6 +38,10 @@ public class Sender{
                 try (Socket socket = new Socket(this.host, this.port)) {
                     OutputStream outStream = socket.getOutputStream();
                     
+                    // Some information for the HistoryLogs
+                    String typeMsg = null;
+                    String contentMsg = null;
+                    
                     byte[] byteMsg;
                     switch (msgType){
                         case "t" :
@@ -40,15 +50,42 @@ public class Sender{
                             
                             TextMessage txtMsg = new TextMessage(myUser.getPseudonym(), message);
                             byteMsg = txtMsg.getBytesMessage();
+                            
+                            typeMsg = "t";
+                            contentMsg = message;
                             break;
                         case "i":
-                            ImageMessage imMsg = new ImageMessage(myUser.getPseudonym(), "/home/salinasg/Bureau/ImageSend/img2.jpg");
+                            String imagePath = "/home/salinasg/Bureau/ImageSend/img2.jpg";
+                            ImageMessage imMsg = new ImageMessage(myUser.getPseudonym(), imagePath);
                             byteMsg = imMsg.getBytesMessage();
+                            
+                            typeMsg = "i";
+                            contentMsg = imagePath;
                             break;
                         default :
                             byteMsg = new byte[1];
                     }
                     
+                    // **** Getting some information to write the message in the HistoryLog associated to this conversation **** //
+                    if (!(typeMsg == null && contentMsg == null)){
+                        User senderMsg = myUser;
+                        User receiverMsg = this.activeUserList.getUserFromIP(this.host);
+                        DateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
+                        Date date1 = new Date();
+                        String[] sDate = dateFormat1.format(date1).split("-");
+                        String day = sDate[0] + "-" + sDate[1] + "-" + sDate[2];
+                        String time = sDate[3] + ":" + sDate[4];
+                        DateLog dateMsg = new DateLog(day, time);
+                        
+                        // Creating a new JSON file in the case this communication is new
+                        // Current directory : /home/salinasg/Bureau/ChatSystem-POO/ChatSystem
+                        String fileName = "Chat_" + receiverMsg.getMACAddress().replace(":", "-") + ".json";
+                        JSONGenerator.generate("./JSONFiles/", fileName);
+                        MessageLog message = new MessageLog(typeMsg, senderMsg, receiverMsg, contentMsg, dateMsg);
+                        JSONWriter.write("./JSONFiles/" + fileName, message);
+                    }
+                    
+
                     outStream.write(byteMsg);
                     outStream.flush();
                     socket.close();

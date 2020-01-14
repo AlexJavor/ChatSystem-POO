@@ -9,6 +9,8 @@ import NetworkInterface.*;
 import GUI.*;
 import java.net.*;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author javornik
@@ -30,14 +32,17 @@ public class ChatSystem {
             // *** Create current user with the obtained Pseudonym, IP Address and MAC Address *** //
             // myPseudonym null when starting
             String myPseudonym = null;
-            //InetAddress myIpAddr = getMyLocalIPAddress();
-            InetAddress myIpAddr = InetAddress.getByName("192.168.1.1"); // Tested locally
+            InetAddress myIpAddr = getMyLocalIPAddress();
+            //InetAddress myIpAddr = InetAddress.getByName("192.168.1.1"); // Tested locally
             String myMacAddr = getMyMacAddress(myIpAddr);
           
             myUser = new User(myPseudonym, myIpAddr, myMacAddr);
             
             System.out.println("System IP Address  : " + (myIpAddr.getHostAddress()).trim());
             System.out.println("System MAC Address : " + myMacAddr);
+            
+            String path = System.getProperty("user.dir");        
+            System.out.println("Working Directory = " + path);
             
             // Start GUI
             LoginGUI UI = new LoginGUI();
@@ -91,8 +96,14 @@ public class ChatSystem {
                 
                 System.out.println("End while");
                 //netInterface.SendMessage();
+                
+                System.out.println("Starting conversation");
+                Sender snd = new Sender(InetAddress.getByName("10.1.5.153"), 2077, netInterface.getActiveUsers());
+                netInterface.sendMessageToUser(snd);
             }
-        } catch (InterruptedException | UnknownHostException e) {}
+        } catch (InterruptedException | SocketException e) {} catch (UnknownHostException ex) {
+            Logger.getLogger(ChatSystem.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public static InetAddress getMyLocalIPAddress() throws SocketException {
@@ -125,7 +136,7 @@ public class ChatSystem {
                     sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? ":" : ""));		
             }
             
-        } catch (Exception e) {e.printStackTrace();}
+        } catch (SocketException e) {}
         return sb.toString();
     }
 }

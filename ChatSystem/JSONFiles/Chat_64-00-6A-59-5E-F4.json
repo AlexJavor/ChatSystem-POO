@@ -1,0 +1,36 @@
+{"LogMessage":
+	[
+		{"Message":
+			{"Sender":
+				{"MACAddress":"64:00:6A:59:5E:F4",
+				"IPAddress":"10.1.5.152",
+				"Pseudonym":"Alex"},
+			"Type":"t",
+			"Content":"Holadola",
+			"Receiver":
+				{"MACAddress":"64:00:6A:59:5F:D7",
+				"IPAddress":"10.1.5.151",
+				"Pseudonym":"dfgdfsgd"},
+			"Date":
+				{"Time":"16:45",
+				"Day":"2020-1-14"}
+			}
+		},
+		{"Message":
+			{"Sender":
+				{"MACAddress":"64:00:6A:59:5E:F4",
+				"IPAddress":"10.1.5.152",
+				"Pseudonym":"Alex"},
+			"Type":"t",
+			"Content":"que tql",
+			"Receiver":
+				{"MACAddress":"64:00:6A:59:5F:D7",
+				"IPAddress":"10.1.5.151",
+				"Pseudonym":"dfgdfsgd"},
+			"Date":
+				{"Time":"16:46",
+				"Day":"2020-1-14"}
+			}
+		}
+	]
+}

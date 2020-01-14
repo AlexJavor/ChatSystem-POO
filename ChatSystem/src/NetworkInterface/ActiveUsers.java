@@ -47,6 +47,33 @@ public class ActiveUsers {
         return exists;
     }
     
+    public User getUserFromPseudo(String pseudo){
+        Iterator<User> iter = this.userList.iterator();
+        User usr_it;
+        User usr_return = null;
+        while (iter.hasNext() && (usr_return == null)){
+            usr_it = iter.next();
+            if (usr_it.getPseudonym().equals(pseudo)){
+                usr_return = usr_it;
+            }
+        }
+        return usr_return;
+    }
+    
+    public User getUserFromIP(InetAddress ip){
+        Iterator<User> iter = this.userList.iterator();
+        User usr_it;
+        User usr_return = null;
+        while (iter.hasNext() && (usr_return == null)){
+            usr_it = iter.next();
+            if (usr_it.getIPAddress().equals(ip)){
+                usr_return = usr_it;
+            }
+        }
+        return usr_return;
+    }
+    
+    @Override
     public String toString() {
         String str = "Active Users: \n";
         User usr;

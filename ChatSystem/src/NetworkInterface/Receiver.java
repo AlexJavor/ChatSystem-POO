@@ -5,6 +5,7 @@
  */
 package NetworkInterface;
 import MainChat.*;
+import HistoryLogs.*;
 import static MainChat.ChatSystem.myUser;
 import static MainChat.ChatSystem.repeatedPseudo;
 import java.net.*;
@@ -21,8 +22,8 @@ import javax.imageio.ImageIO;
  * @author salinasg
  */
 public class Receiver implements Runnable{
-    private int port;
-    private ActiveUsers activeUserList;
+    private final int port;
+    private final ActiveUsers activeUserList;
     
     public Receiver(int port, ActiveUsers activeUserList){
         this.port = port;
@@ -33,6 +34,7 @@ public class Receiver implements Runnable{
     * On lance un thread : ce thread doit lire un seul message puis 
     * on le ferme. 
     */
+    @Override
     public void run(){
         try{
             ServerSocket servSocket = new ServerSocket(this.port);
@@ -57,6 +59,20 @@ public class Receiver implements Runnable{
                 inStream.read(bytePseudo);
                 String stringPseudo = new String(bytePseudo);
                 //System.out.println("Pseudonym: " + stringPseudo);
+                
+                // **** Getting some information to write the message in the HistoryLog associated to this conversation **** //
+                User senderMsg = this.activeUserList.getUserFromPseudo(stringPseudo);
+                User receiverMsg = myUser;
+                
+                DateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
+                Date date1 = new Date();
+                String[] sDate = dateFormat1.format(date1).split("-");
+                String day = sDate[0] + "-" + sDate[1] + "-" + sDate[2];
+                String time = sDate[3] + ":" + sDate[4];
+                DateLog dateMsg = new DateLog(day, time);
+                
+                String typeMsg = null;
+                String contentMsg = null;                
 
                 // **** Receiving Payload Size **** //
                 byte[] sizeBytePayload = new byte[4];
@@ -79,15 +95,29 @@ public class Receiver implements Runnable{
                         //System.out.println("Text Payload: " + stringText);
                         // **** Print Constructed Text Message **** //
                         System.out.println(stringPseudo + ": " + stringText);
+                        
+                        typeMsg = "t";
+                        contentMsg = stringText;
+                        
                         break;
                     case 'i':
                         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
                         Date date = new Date();
                         BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytePayload));
-                        ImageIO.write(image, "jpg", new File("/home/javornik/Bureau/Photo-" + stringPseudo + "-" + dateFormat.format(date) + ".jpg"));
+                        String path = "/home/javornik/Bureau/Photo-" + stringPseudo + "-" + dateFormat.format(date) + ".jpg";
+                        ImageIO.write(image, "jpg", new File(path));
+                        
+                        typeMsg = "i";
+                        contentMsg = path;
+                        
                         //System.out.println("Receiving image message ");
                         break;
                     case 'f':
+                        path = "/home/javornik/Bureau";
+                        
+                        typeMsg = "f";
+                        contentMsg = path;
+                        
                         System.out.println("Receiving file message");
                         break;
                     case 's':
@@ -111,6 +141,15 @@ public class Receiver implements Runnable{
                         System.out.println("Error unrecognised Type");
                         break;
                 }
+                if (!(typeMsg == null && contentMsg == null)){
+                    // Creating a new JSON file in the case this communication is new
+                    // Current directory : /home/salinasg/Bureau/ChatSystem-POO/ChatSystem
+                    String fileName = "Chat_" + senderMsg.getMACAddress().replace(":", "-") + ".json";
+                    JSONGenerator.generate("./JSONFiles/", fileName);
+                    MessageLog message = new MessageLog(typeMsg, senderMsg, receiverMsg, contentMsg, dateMsg);
+                    JSONWriter.write("./JSONFiles/" + fileName, message);
+                }
+                
                 socket.close();
             }
             //servSocket.close();       

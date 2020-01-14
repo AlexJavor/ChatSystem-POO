@@ -1,0 +1,20 @@
+{"LogMessage":
+	[
+		{"Message":
+			{"Sender":
+				{"MACAddress":"64:00:6A:59:5F:D7",
+				"IPAddress":"10.1.5.151",
+				"Pseudonym":"Anthony"},
+			"Type":"t",
+			"Content":"Hello",
+			"Receiver":
+				{"MACAddress":"64:00:6A:59:5B:A4",
+				"IPAddress":"10.1.5.153",
+				"Pseudonym":"Aleks"},
+			"Date":
+				{"Time":"17:53",
+				"Day":"2020-1-14"}
+			}
+		}
+	]
+}
