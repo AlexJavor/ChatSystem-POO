@@ -32,26 +32,34 @@ public class MulticastSender {
             System.exit(1);
         }
         this.port = port;
-        // Defalut message is hello world
-        CurrentActiveStatus();
     }
     
-    public final void CurrentActiveStatus(){
-        this.multicastMsg = "Status ACTIVE. Pseudonym-" + myUser.getPseudonym() + "-IP address-" + myUser.getIPAddress() + "-MAC Address-" + myUser.getMACAddress();
+    public final void ConnectedStatus(){
+        this.multicastMsg = "Status:CONNECTED-Pseudonym-" + myUser.getPseudonym() + "-IP address-" + myUser.getIPAddress() + "-MAC Address-" + myUser.getMACAddress();
     }
     
-    public final void Disconnecting(){
-        this.multicastMsg = "Status INACTIVE.";
+    public final void NewPseudoStatus(){
+        this.multicastMsg = "Status:NEW_PSEUDONYM-Pseudonym-" + myUser.getPseudonym() + "-IP address-" + myUser.getIPAddress() + "-MAC Address-" + myUser.getMACAddress();
+    }
+    
+    public final void DisconnectedStatus(){
+        this.multicastMsg = "Status:DISCONNECTED-Pseudonym-" + myUser.getPseudonym() + "-IP address-" + myUser.getIPAddress() + "-MAC Address-" + myUser.getMACAddress();
     }
  
     public void Send(String status){
         switch(status){
-            case "online":
-                CurrentActiveStatus();
+            case "Status:CONNECTED":
+                ConnectedStatus();
                 break;
-            case "offline":
-                Disconnecting();
-                break;                  
+            case "Status:NEW_PSEUDONYM":
+                NewPseudoStatus();
+                break;
+            case "Status:DISCONNECTED":
+                DisconnectedStatus();
+                break;
+            default:
+                System.out.println(status);
+                break;
         }        
         System.setProperty("java.net.preferIPv4Stack", "true");
         try{

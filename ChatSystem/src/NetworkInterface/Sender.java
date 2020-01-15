@@ -70,12 +70,7 @@ public class Sender{
                     if (!(typeMsg == null && contentMsg == null)){
                         User senderMsg = myUser;
                         User receiverMsg = this.activeUserList.getUserFromIP(this.host);
-                        DateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
-                        Date date1 = new Date();
-                        String[] sDate = dateFormat1.format(date1).split("-");
-                        String day = sDate[0] + "-" + sDate[1] + "-" + sDate[2];
-                        String time = sDate[3] + ":" + sDate[4];
-                        DateLog dateMsg = new DateLog(day, time);
+                        DateLog dateMsg = DateLog.getCurrentDate();
                         
                         // Creating a new JSON file in the case this communication is new
                         // Current directory : /home/salinasg/Bureau/ChatSystem-POO/ChatSystem

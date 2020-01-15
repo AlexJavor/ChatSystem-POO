@@ -15,14 +15,18 @@ import java.util.*;
  */
 public class ActiveUsers {
     
+    // Attributes
     private ArrayList<User> userList;
     
+    // Constructor
     public ActiveUsers(){
         this.userList = new ArrayList<>();
     }
     
+    // Getters
     public ArrayList<User> getActiveUsers(){ return this.userList; }
     
+    // Methods
     // Adds active user if its pseudonym is not already on the list: It ignores the new one.
     public void addActiveUser(User usr){
         if (!this.containsSamePseudonym(usr.getPseudonym())){
@@ -41,6 +45,20 @@ public class ActiveUsers {
         while(iter.hasNext()){
             usr = iter.next();
             if(usr.getPseudonym().equals(pseudo)){
+                exists = true;
+            }
+        }
+        return exists;
+    }
+    
+        
+    public boolean containsUser(String macAddress){
+        boolean exists = false;
+        User usr;
+        Iterator<User> iter = this.userList.iterator();
+        while(iter.hasNext()){
+            usr = iter.next();
+            if(usr.getMACAddress().equals(macAddress)){
                 exists = true;
             }
         }
@@ -71,6 +89,20 @@ public class ActiveUsers {
             }
         }
         return usr_return;
+    }
+    
+    // Use after checking if the user is in the list
+    public User getActiveUserFromMAC(String macAddress){
+        User usr;
+        Iterator<User> iter = this.userList.iterator();
+        usr = iter.next();
+        while(iter.hasNext()){
+            if(usr.getMACAddress().equals(macAddress)){
+                break;
+            }
+            usr = iter.next();
+        }
+        return usr;
     }
     
     @Override

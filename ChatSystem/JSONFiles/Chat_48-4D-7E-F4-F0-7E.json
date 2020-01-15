@@ -1,0 +1,36 @@
+{"LogMessage":
+	[
+		{"Message":
+			{"Sender":
+				{"MACAddress":"48:4D:7E:F4:F0:7E",
+				"IPAddress":"10.1.5.86",
+				"Pseudonym":"Anthony"},
+			"Type":"t",
+			"Content":"Hello",
+			"Receiver":
+				{"MACAddress":"48:4D:7E:F4:EF:96",
+				"IPAddress":"10.1.5.85",
+				"Pseudonym":"Alex"},
+			"Date":
+				{"Time":"11:34",
+				"Day":"2020-1-15"}
+			}
+		},
+		{"Message":
+			{"Sender":
+				{"MACAddress":"48:4D:7E:F4:EF:96",
+				"IPAddress":"10.1.5.85",
+				"Pseudonym":"Alex"},
+			"Type":"t",
+			"Content":"xwing vs tie fighter",
+			"Receiver":
+				{"MACAddress":"48:4D:7E:F4:F0:7E",
+				"IPAddress":"10.1.5.86",
+				"Pseudonym":"Anthony"},
+			"Date":
+				{"Time":"11:35",
+				"Day":"2020-1-15"}
+			}
+		}
+	]
+}

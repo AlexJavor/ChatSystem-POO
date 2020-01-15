@@ -2,6 +2,9 @@ package HistoryLogs;
 
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * DateLog : Class used to store a date with the Year, Month, Day, Hour and Mins.
@@ -75,6 +78,16 @@ public class DateLog {
         this.hour= hr;
         this.month = mth;
         this.mins = min;
+    }
+    
+    public static DateLog getCurrentDate(){
+        DateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
+        Date date1 = new Date();
+        String[] sDate = dateFormat1.format(date1).split("-");
+        String day = sDate[0] + "-" + sDate[1] + "-" + sDate[2];
+        String time = sDate[3] + ":" + sDate[4];
+        DateLog dateMsg = new DateLog(day, time);
+        return dateMsg;
     }
 
     /* Getters */

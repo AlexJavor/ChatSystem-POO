@@ -6,7 +6,6 @@
 package NetworkInterface;
 
 import static MainChat.ChatSystem.myUser;
-import static MainChat.ChatSystem.repeatedPseudo;
 import MainChat.User;
 import Messages.*;
 import java.io.*;
@@ -23,6 +22,8 @@ public class MulticastReceiver implements Runnable {
     private int unicastPort;
     private User newUser;
     private ActiveUsers activeUserList;
+    private boolean newUserINActiveUserList;
+    private String newUserStatus;
     private String newUserPseudonym;
     private InetAddress newUserIPAddress;
     private String newUserMACAdress;
@@ -73,27 +74,44 @@ public class MulticastReceiver implements Runnable {
                 String received = new String(packet.getData(), 0, packet.getLength());
                 //System.out.println(received);
                 
-                // Extract Pseudonym and IP and MAC addresses
+                // Extract Status, Pseudonym, IP address and MAC address
                 String[] newUserInfo = received.split("-"); 
-                this.newUserPseudonym = newUserInfo[1];
+                this.newUserStatus = newUserInfo[0];
+                this.newUserPseudonym = newUserInfo[2];
                 try{
-                    this.newUserIPAddress = InetAddress.getByName(newUserInfo[3].split("/")[1]);
+                    this.newUserIPAddress = InetAddress.getByName(newUserInfo[4].split("/")[1]);
                 } catch (UnknownHostException e){
                     System.out.println("ERROR : newUserIPAddress incorrect format");
                     System.exit(1);
                 }
-                this.newUserMACAdress = newUserInfo[5];
+                this.newUserMACAdress = newUserInfo[6];
                
                 //System.out.println("New user addr: " + this.newUserIPAddress);
                 //System.out.println("My user addr : " + this.myUser.getIPAddress());
                 
                 // Add new user to active user list and Send your own IP and Pseudonym to the new user
-                
+                // Check if it is an autoreceive message
                 if (!this.newUserIPAddress.toString().equals(myUser.getIPAddress().toString())) {
+                    // Check if the new user has a different pseudo as you
                     if(!this.newUserPseudonym.equals(myUser.getPseudonym())){
-                        // Adding new user to active user list
-                        this.newUser = new User(this.newUserPseudonym, this.newUserIPAddress, this.newUserMACAdress);
-                        this.activeUserList.addActiveUser(this.newUser);
+                        // Check if new user has same MAC address as someone of the ActiveUsers list + verify status
+                        this.newUserINActiveUserList = this.activeUserList.containsUser(this.newUserMACAdress);
+                        
+                        if(!this.newUserINActiveUserList && this.newUserStatus.equals("Status:CONNECTED")){
+                            // Adding new user to active user list if its pseudo is not already in it
+                            this.newUser = new User(this.newUserPseudonym, this.newUserIPAddress, this.newUserMACAdress);
+                            this.activeUserList.addActiveUser(this.newUser);
+                        } else if (this.newUserINActiveUserList && this.newUserStatus.equals("Status:NEW_PSEUDONYM")) {
+                            // Changing new user's pseudonym name
+                            this.newUser = this.activeUserList.getActiveUserFromMAC(this.newUserMACAdress);
+                            this.newUser.setPseudonym(this.newUserPseudonym);
+                            this.activeUserList.addActiveUser(this.newUser);
+                        } else if (this.newUserINActiveUserList && this.newUserStatus.equals("Status:DISCONNECTED")) {
+                            this.newUser = this.activeUserList.getActiveUserFromMAC(this.newUserMACAdress);
+                            this.activeUserList.removeActiveUser(this.newUser);
+                        } else {
+                            System.out.println("Status unrecognised / User error? - check MulitcastReceiver");
+                        }
                     } else {
                         System.out.println("Omiting new user with the same pseudonym as me");
                     }
@@ -104,7 +122,7 @@ public class MulticastReceiver implements Runnable {
                 }
                 
                 // Keep thread open until you close the connection
-                if(received == "endConection") {
+                if(this.newUserStatus.equals("Status:DISCONNECTED")) {
                     break;
                 }
             }

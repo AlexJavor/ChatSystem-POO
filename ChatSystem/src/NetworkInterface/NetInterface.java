@@ -6,15 +6,16 @@
 package NetworkInterface;
 import MainChat.*;
 import static MainChat.ChatSystem.myUser;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 /**
  *
  * @author salinasg
  */
 public class NetInterface{
-    
-    private int unicastPort;
-    private String multicastAddr;
-    private int multicastPort;
     
     private ActiveUsers activeUserList;
     private Receiver rcv;
@@ -23,12 +24,11 @@ public class NetInterface{
     private Thread threadReceiver;
     private Thread threadMulticastReceiver;
 
+    private final int unicastPort = 2077;
+    private final int multicastPort = 1138;
+    private final String multicastAddr = "225.192.0.1";
     
-    public NetInterface(User usr, int unicastPort, String multicastAddr, int multicastPort){
-        
-        this.unicastPort = unicastPort;
-        this.multicastAddr = multicastAddr;
-        this.multicastPort = multicastPort;
+    public NetInterface(){
         
         this.activeUserList = new ActiveUsers();
         this.rcv = new Receiver(this.unicastPort, activeUserList);
@@ -40,6 +40,7 @@ public class NetInterface{
     
     // Getters
     public ActiveUsers getActiveUsers() { return this.activeUserList; }
+    public MulticastSender getMulticastSender() { return this.multiSnd; }
     
     // Methods
     private void startReceiver(){

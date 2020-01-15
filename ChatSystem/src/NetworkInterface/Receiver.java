@@ -7,7 +7,7 @@ package NetworkInterface;
 import MainChat.*;
 import HistoryLogs.*;
 import static MainChat.ChatSystem.myUser;
-import static MainChat.ChatSystem.repeatedPseudo;
+import static GUI.Controller.repeatedPseudo;
 import java.net.*;
 import java.io.*;
 import java.util.*;
@@ -59,17 +59,6 @@ public class Receiver implements Runnable{
                 inStream.read(bytePseudo);
                 String stringPseudo = new String(bytePseudo);
                 //System.out.println("Pseudonym: " + stringPseudo);
-                
-                // **** Getting some information to write the message in the HistoryLog associated to this conversation **** //
-                User senderMsg = this.activeUserList.getUserFromPseudo(stringPseudo);
-                User receiverMsg = myUser;
-                
-                DateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
-                Date date1 = new Date();
-                String[] sDate = dateFormat1.format(date1).split("-");
-                String day = sDate[0] + "-" + sDate[1] + "-" + sDate[2];
-                String time = sDate[3] + ":" + sDate[4];
-                DateLog dateMsg = new DateLog(day, time);
                 
                 String typeMsg = null;
                 String contentMsg = null;                
@@ -142,8 +131,13 @@ public class Receiver implements Runnable{
                         break;
                 }
                 if (!(typeMsg == null && contentMsg == null)){
+                    // **** Getting some information to write the message in the HistoryLog associated to this conversation **** //
+                    User senderMsg = this.activeUserList.getUserFromPseudo(stringPseudo);
+                    User receiverMsg = myUser;
+                    DateLog dateMsg = DateLog.getCurrentDate();
+                    
                     // Creating a new JSON file in the case this communication is new
-                    // Current directory : /home/salinasg/Bureau/ChatSystem-POO/ChatSystem
+                    // Current directory : /home/salinasg/Bureau/ChatSystem-POO/ChatSystem                    
                     String fileName = "Chat_" + senderMsg.getMACAddress().replace(":", "-") + ".json";
                     JSONGenerator.generate("./JSONFiles/", fileName);
                     MessageLog message = new MessageLog(typeMsg, senderMsg, receiverMsg, contentMsg, dateMsg);
