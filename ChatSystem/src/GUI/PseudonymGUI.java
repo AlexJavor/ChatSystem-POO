@@ -24,15 +24,18 @@ public class PseudonymGUI extends javax.swing.JFrame {
      */
     
     private Controller controller;
+    private ChatGUI chatGUI;
     
-    public PseudonymGUI(Controller controller) {
+    public PseudonymGUI(Controller controller, ChatGUI chatGUI) {
+        super("Chat System v0.5");
         initComponents();
         this.controller = controller;
+        this.chatGUI = chatGUI;
         //Max number of pseudonym characters
         jTextField1.setDocument(new JTextFieldLimit(15));
         //Set GUI in the center
         setLocationRelativeTo(null);
-        
+        // Closing default instruction -> send status to all active users
         if(!firstConnection){
             this.addWindowListener(new WindowAdapter() {
                 @Override
@@ -106,11 +109,11 @@ public class PseudonymGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        this.controller.confirmPseudonym(this, evt, jTextField1);
+        this.controller.confirmPseudonym(this, this.chatGUI, evt, jTextField1, chatGUI.getMyPseudoGUI());
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.controller.confirmPseudonym(this, evt, jTextField1);
+        this.controller.confirmPseudonym(this, this.chatGUI, evt, jTextField1, chatGUI.getMyPseudoGUI());
     }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

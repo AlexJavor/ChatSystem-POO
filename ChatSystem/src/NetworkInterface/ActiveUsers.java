@@ -5,6 +5,7 @@
  */
 package NetworkInterface;
 
+import GUI.ChatGUI;
 import MainChat.User;
 import java.net.InetAddress;
 import java.util.*;
@@ -17,10 +18,11 @@ public class ActiveUsers {
     
     // Attributes
     private ArrayList<User> userList;
-    
+    private ChatGUI chatGUI;
     // Constructor
-    public ActiveUsers(){
+    public ActiveUsers(ChatGUI chatGUI){
         this.userList = new ArrayList<>();
+        this.chatGUI = chatGUI;
     }
     
     // Getters
@@ -31,12 +33,47 @@ public class ActiveUsers {
     public void addActiveUser(User usr){
         if (!this.containsSamePseudonym(usr.getPseudonym())){
             this.userList.add(usr);
+            this.chatGUI.getListModel().addElement(usr.getPseudonym());
+        }
+    }
+    
+    public void updateActiveUser(User usr){
+        // Remove previous entry
+        this.userList.remove(usr);
+        // Check where is the user to update and change its pseudo
+        if (!this.containsSamePseudonym(usr.getPseudonym())){
+            // Take user index
+            User iterUser;
+            int index = 0;
+            Iterator<User> iter = this.userList.iterator();
+            while(iter.hasNext()){
+                iterUser = iter.next();
+                if(iterUser.equals(usr)){
+                    break;
+                }
+                index++;
+            }
+            this.userList.add(usr);
+            this.chatGUI.getListModel().setElementAt(usr.getPseudonym(),index);
         }
     }
     
     public void removeActiveUser(User usr){ 
-        this.userList.remove(usr); 
-    } 
+        this.userList.remove(usr);
+        // Take user index
+        User iterUser;
+        int index = 0;
+        Iterator<User> iter = this.userList.iterator();
+        while(iter.hasNext()){
+            iterUser = iter.next();
+            if(iterUser.equals(usr)){
+                break;
+            }
+            index++;
+        }
+        // Delete user from GUI list
+        this.chatGUI.getListModel().remove(index);
+    }
     
     public boolean containsSamePseudonym(String pseudo){
         boolean exists = false;

@@ -1,1 +1,5 @@
+/ChatSystem/build/*
 /ChatSystem/dist/
+# Logs and databases #
+######################
+*.json

@@ -4,13 +4,7 @@
  * and open the template in the editor.
  */
 package NetworkInterface;
-import MainChat.*;
-import static MainChat.ChatSystem.myUser;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
+import GUI.ChatGUI;
 /**
  *
  * @author salinasg
@@ -28,9 +22,9 @@ public class NetInterface{
     private final int multicastPort = 1138;
     private final String multicastAddr = "225.192.0.1";
     
-    public NetInterface(){
+    public NetInterface(ChatGUI chatGUI){
         
-        this.activeUserList = new ActiveUsers();
+        this.activeUserList = new ActiveUsers(chatGUI);
         this.rcv = new Receiver(this.unicastPort, activeUserList);
         this.multiSnd = new MulticastSender(this.multicastAddr, this.multicastPort);
         this.multiRcv = new MulticastReceiver(this.multicastAddr, this.multicastPort, activeUserList, this.unicastPort);

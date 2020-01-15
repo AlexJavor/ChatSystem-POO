@@ -17,9 +17,9 @@ import java.net.*;
  */
 public class MulticastReceiver implements Runnable {
     
-    private InetAddress group;
-    private int multicastPort;
-    private int unicastPort;
+    private final int multicastPort;
+    private final int unicastPort;
+    private InetAddress multicastAddr;
     private User newUser;
     private ActiveUsers activeUserList;
     private boolean newUserINActiveUserList;
@@ -30,7 +30,7 @@ public class MulticastReceiver implements Runnable {
     
     public MulticastReceiver(String groupIP, int multicastPort, ActiveUsers activeUserList, int unicastPort){
         try{
-            this.group = InetAddress.getByName(groupIP);
+            this.multicastAddr = InetAddress.getByName(groupIP);
         } catch (UnknownHostException e){
             System.out.println("ERROR : look at multicastreceiver " + e);
             System.exit(1);
@@ -43,7 +43,7 @@ public class MulticastReceiver implements Runnable {
     // Methods
     public void replyMyUser(InetAddress newUserIP){
         // Send your own IP and Pseudonym to the new user
-        try (Socket tcpSocket = new Socket(newUserIP, 2077)) {
+        try (Socket tcpSocket = new Socket(newUserIP, this.unicastPort)) {
             OutputStream outStream = tcpSocket.getOutputStream();
 
             byte[] byteMsg;
@@ -64,7 +64,7 @@ public class MulticastReceiver implements Runnable {
         System.setProperty("java.net.preferIPv4Stack", "true");
         try {
             MulticastSocket socket = new MulticastSocket(this.multicastPort);
-            socket.joinGroup(this.group);
+            socket.joinGroup(this.multicastAddr);
 
             while(true) {
                 // Receive IP and pseudonym of a new user
@@ -103,9 +103,10 @@ public class MulticastReceiver implements Runnable {
                             this.activeUserList.addActiveUser(this.newUser);
                         } else if (this.newUserINActiveUserList && this.newUserStatus.equals("Status:NEW_PSEUDONYM")) {
                             // Changing new user's pseudonym name
+                            System.out.println("New user changed pseudonym!");
                             this.newUser = this.activeUserList.getActiveUserFromMAC(this.newUserMACAdress);
                             this.newUser.setPseudonym(this.newUserPseudonym);
-                            this.activeUserList.addActiveUser(this.newUser);
+                            this.activeUserList.updateActiveUser(this.newUser);
                         } else if (this.newUserINActiveUserList && this.newUserStatus.equals("Status:DISCONNECTED")) {
                             this.newUser = this.activeUserList.getActiveUserFromMAC(this.newUserMACAdress);
                             this.activeUserList.removeActiveUser(this.newUser);
@@ -116,17 +117,20 @@ public class MulticastReceiver implements Runnable {
                         System.out.println("Omiting new user with the same pseudonym as me");
                     }
                     System.out.println(activeUserList.toString());
-                    replyMyUser(this.newUserIPAddress);
+                    // Reply the new user only if he is trying to connect
+                    if(!this.newUserStatus.equals("Status:DISCONNECTED")){
+                        replyMyUser(this.newUserIPAddress);
+                    }
+                    
                 } else {
                     System.out.println("Autoreceived multicast packet");
-                }
-                
-                // Keep thread open until you close the connection
-                if(this.newUserStatus.equals("Status:DISCONNECTED")) {
-                    break;
+                    // Keep thread open until autosending the Disconnect status
+                    if(this.newUserStatus.equals("Status:DISCONNECTED")) {
+                        break;
+                    }
                 }
             }
-            socket.leaveGroup(this.group);
+            socket.leaveGroup(this.multicastAddr);
             socket.close();
         } catch(IOException e){
             System.out.println("ERROR : look at multicastreceviver - " + e);

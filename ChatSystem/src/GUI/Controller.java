@@ -7,10 +7,14 @@ package GUI;
 
 import static MainChat.ChatSystem.myUser;
 import static MainChat.ChatSystem.netInterface;
+import MainChat.User;
+import NetworkInterface.ActiveUsers;
 import NetworkInterface.NetInterface;
 import NetworkInterface.Sender;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import javax.swing.JOptionPane;
 
 /**
@@ -34,13 +38,12 @@ public class Controller {
     public void setChangePseudonym(boolean changePseudonym) { this.changePseudonym = changePseudonym; }
     
     // Methods
-    public void confirmPseudonym(PseudonymGUI pseudonymGUI, java.awt.event.ActionEvent evt, javax.swing.JTextField jTextField1){
+    public void confirmPseudonym(PseudonymGUI pseudonymGUI, ChatGUI chatGUI, java.awt.event.ActionEvent evt, javax.swing.JTextField jTextField1, javax.swing.JLabel jLabelMyPsudonym){
         
         repeatedPseudo = false;
         
         // Get pseudonym from text field
         this.localPseudonym = jTextField1.getText();
-        //ChatSystem.ChangePseudonymMain(this.localPseudonym);
         // Check if its a correct pseudo:
         if(this.localPseudonym.matches("^[a-zA-Z0-9]+$") && this.localPseudonym.length() > 0){
             
@@ -49,7 +52,7 @@ public class Controller {
             // If it is not the first connection there should be already a neetwork interface
             System.out.println("FirstConnection = " + firstConnection);
             if(firstConnection){
-                netInterface = new NetInterface();
+                netInterface = new NetInterface(chatGUI);
                 netInterface.sendMulticastMessage("Status:CONNECTED");
                 firstConnection = false;
             } else {
@@ -68,14 +71,30 @@ public class Controller {
                 JOptionPane.showMessageDialog(null, "Pseudonym already in use, please choose another one");
                 jTextField1.setText("");
                 myUser.setPseudonym(null);
-            } else {  
-                new ChatGUI(this).setVisible(true);
-                pseudonymGUI.setVisible(false);          
+            } else {
+                jLabelMyPsudonym.setText(this.localPseudonym);
+                pseudonymGUI.setVisible(false);
+                chatGUI.setVisible(true);                     
             }
             
         } else {
             JOptionPane.showMessageDialog(null, "Your pseudonym must contain only alphanumeric characters and not be empty");
             jTextField1.setText("");
+        }
+    }
+    
+    public void updateGUIActiveUserList(ActiveUsers activeUsers, ChatGUI chatGUI){
+        //First we remove all elements:
+        chatGUI.getListModel().removeAllElements();
+        
+        //Second we add all pseudos from the active user list to the GUI jList
+        ArrayList<User> activeUsersList = activeUsers.getActiveUsers();
+        User usr;
+        Iterator<User> iter = activeUsersList.iterator();
+        while(iter.hasNext()){
+            usr = iter.next();
+            // Add Pseudonym's user to GUI list
+            chatGUI.getListModel().addElement(usr.getPseudonym());
         }
     }
 }

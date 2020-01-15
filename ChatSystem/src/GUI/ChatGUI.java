@@ -7,15 +7,11 @@ package GUI;
 
 import static MainChat.ChatSystem.myUser;
 import static MainChat.ChatSystem.netInterface;
-import NetworkInterface.MulticastSender;
-import NetworkInterface.NetInterface;
 import NetworkInterface.Sender;
 import java.awt.event.WindowAdapter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.PlainDocument;
+import javax.swing.DefaultListModel;
 
 /**
  *
@@ -24,18 +20,22 @@ import javax.swing.text.PlainDocument;
 public class ChatGUI extends javax.swing.JFrame {
     
     private Controller controller;
-    
+    private DefaultListModel listModel;
     /**
      * Creates new form ChatGUI
      * @param myPseudo
      */
     
     public ChatGUI(Controller controller){
-        super("Chat System v0.2");
+        super("Chat System v0.5");
         initComponents();
-        setLocationRelativeTo(null);
-        myPsudonym.setText(myUser.getPseudonym());
+        
         this.controller = controller;
+        this.listModel = new DefaultListModel();
+        jList1ActiveUsers.setModel(listModel);
+        
+        setLocationRelativeTo(null);
+        
         
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -45,7 +45,11 @@ public class ChatGUI extends javax.swing.JFrame {
             }
         });
     }
-
+    
+    // Getters
+    public javax.swing.JLabel getMyPseudoGUI() { return this.myPsudonym; }
+    public DefaultListModel getListModel() { return this.listModel; }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -60,8 +64,6 @@ public class ChatGUI extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jTextField1 = new javax.swing.JTextField();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
         jLabel2 = new javax.swing.JLabel();
         jButton1Send = new javax.swing.JButton();
         jButton2Change = new javax.swing.JButton();
@@ -69,6 +71,8 @@ public class ChatGUI extends javax.swing.JFrame {
         jButton4 = new javax.swing.JButton();
         jScrollBar1 = new javax.swing.JScrollBar();
         jScrollBar2 = new javax.swing.JScrollBar();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jList1ActiveUsers = new javax.swing.JList<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -86,13 +90,6 @@ public class ChatGUI extends javax.swing.JFrame {
                 jTextField1ActionPerformed(evt);
             }
         });
-
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane2.setViewportView(jList1);
 
         jLabel2.setText("Choose Active User:");
 
@@ -119,6 +116,8 @@ public class ChatGUI extends javax.swing.JFrame {
 
         jButton4.setText("Send File");
 
+        jScrollPane3.setViewportView(jList1ActiveUsers);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -128,7 +127,7 @@ public class ChatGUI extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollBar2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
@@ -166,8 +165,8 @@ public class ChatGUI extends javax.swing.JFrame {
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollBar2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)))
+                            .addComponent(jScrollBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
+                            .addComponent(jScrollPane3)))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
@@ -201,7 +200,7 @@ public class ChatGUI extends javax.swing.JFrame {
 
     private void jButton2ChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ChangeActionPerformed
         this.controller.setChangePseudonym(true);
-        new PseudonymGUI(this.controller).setVisible(true);
+        new PseudonymGUI(this.controller, this).setVisible(true);
         this.setVisible(false); 
     }//GEN-LAST:event_jButton2ChangeActionPerformed
 
@@ -213,11 +212,11 @@ public class ChatGUI extends javax.swing.JFrame {
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JList<String> jList1;
+    private javax.swing.JList<String> jList1ActiveUsers;
     private javax.swing.JScrollBar jScrollBar1;
     private javax.swing.JScrollBar jScrollBar2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel myPsudonym;

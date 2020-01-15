@@ -14,9 +14,6 @@ import java.util.Enumeration;
  * @author javornik
  */
 public class ChatSystem {
-
-    /**
-     */
     
     public static User myUser = null;
     public static NetInterface netInterface = null;
@@ -26,8 +23,8 @@ public class ChatSystem {
             // *** Create current user with the obtained Pseudonym, IP Address and MAC Address *** //
             // myPseudonym null when starting
             String myPseudonym = null;
-            InetAddress myIpAddr = getMyLocalIPAddress();
-            //InetAddress myIpAddr = InetAddress.getByName("192.168.1.1"); // Tested locally
+            //InetAddress myIpAddr = getMyLocalIPAddress();
+            InetAddress myIpAddr = InetAddress.getByName("192.168.1.1"); // Tested locally
             String myMacAddr = getMyMacAddress(myIpAddr);
             
             System.out.println("System IP Address  : " + (myIpAddr.getHostAddress()).trim());
@@ -38,12 +35,12 @@ public class ChatSystem {
             
             // Start GUI
             Controller controller = new Controller();
-            PseudonymGUI UI = new PseudonymGUI(controller);
-            UI.setVisible(true);
+            ChatGUI chatUI = new ChatGUI(controller);
+            PseudonymGUI psuedoUI = new PseudonymGUI(controller, chatUI);
+            chatUI.setVisible(false);
+            psuedoUI.setVisible(true);
             
-            
-            
-        } catch (SocketException e) {}
+        } catch (UnknownHostException /*| SocketException*/ e) {}
     }
     
     public static InetAddress getMyLocalIPAddress() throws SocketException {
