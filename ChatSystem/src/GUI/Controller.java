@@ -11,12 +11,15 @@ import MainChat.User;
 import NetworkInterface.ActiveUsers;
 import NetworkInterface.NetInterface;
 import NetworkInterface.Sender;
+import java.awt.event.ActionListener;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-
+import javax.swing.Timer;
+import java.awt.event.ActionEvent;
 /**
  *
  * @author alexjavor
@@ -72,6 +75,7 @@ public class Controller {
                 jTextField1.setText("");
                 myUser.setPseudonym(null);
             } else {
+                // Start chatGUI
                 jLabelMyPsudonym.setText(this.localPseudonym);
                 pseudonymGUI.setVisible(false);
                 chatGUI.setVisible(true);                     
@@ -83,18 +87,49 @@ public class Controller {
         }
     }
     
-    public void updateGUIActiveUserList(ActiveUsers activeUsers, ChatGUI chatGUI){
-        //First we remove all elements:
-        chatGUI.getListModel().removeAllElements();
-        
-        //Second we add all pseudos from the active user list to the GUI jList
-        ArrayList<User> activeUsersList = activeUsers.getActiveUsers();
-        User usr;
-        Iterator<User> iter = activeUsersList.iterator();
-        while(iter.hasNext()){
-            usr = iter.next();
-            // Add Pseudonym's user to GUI list
-            chatGUI.getListModel().addElement(usr.getPseudonym());
+    public void selectActiveUserGUI(ChatGUI chatGUI) {
+        // Check if something is selected
+        if(chatGUI.getListActiveUsers().isSelectionEmpty()){
+             // Clearing text area
+            chatGUI.getTextAreaHistory().setText("");    
+        } else {
+            // Clearing text area
+            chatGUI.getTextAreaHistory().setText(""); // TODO load history file if it exists else setText("")
+            // Setting current sender
+            String selectedPseudo = chatGUI.getListActiveUsers().getSelectedValue();
+            User selectedUser = netInterface.getActiveUsers().getUserFromPseudo(selectedPseudo);
+            Sender snd = netInterface.getActiveUsers().getSenderFromIP(selectedUser.getIPAddress());
+            chatGUI.setCurrentSenderGUI(snd);
+            // Delete notification
+            String notificationMessage = "New message(s) from " + selectedPseudo;
+            if(chatGUI.getListModelOtherMessages().contains(notificationMessage)){
+                int index = chatGUI.getListOtherMessages().getNextMatch(notificationMessage, 0, javax.swing.text.Position.Bias.Forward);
+                chatGUI.getListModelOtherMessages().remove(index);
+            }
+        }
+    }
+    
+    public void sendTextMessageChatGUI(ChatGUI chatGUI) {
+        if(chatGUI.getListActiveUsers().isSelectionEmpty()){
+            JOptionPane.showMessageDialog(null, "Please select an active user");
+        } else {
+            String message = chatGUI.getTextFieldSend().getText();
+            netInterface.sendMessageToUser(chatGUI.getCurrentSenderGUI(), "t", message);   
+            chatGUI.getTextFieldSend().setText("");
+            chatGUI.getTextAreaHistory().append(myUser.getPseudonym() + "(me): " + message + "\n");    
+        }
+    }
+    
+    public void receiverManagerGUI(ChatGUI chatGUI, String stringPseudo, String stringText){
+        String selectedActiveUser = chatGUI.getListActiveUsers().getSelectedValue();
+        if(selectedActiveUser == null ? stringPseudo == null : selectedActiveUser.equals(stringPseudo)) {
+            String fullMessage = stringPseudo + ": " + stringText + "\n";
+            chatGUI.getTextAreaHistory().append(fullMessage);
+        } else {
+            String notificationMessage = "New message(s) from " + stringPseudo;
+            if(!chatGUI.getListModelOtherMessages().contains(notificationMessage)){
+                chatGUI.getListModelOtherMessages().addElement(notificationMessage);
+            }
         }
     }
 }

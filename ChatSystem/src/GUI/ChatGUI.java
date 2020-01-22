@@ -7,11 +7,13 @@ package GUI;
 
 import static MainChat.ChatSystem.myUser;
 import static MainChat.ChatSystem.netInterface;
+import MainChat.User;
 import NetworkInterface.Sender;
 import java.awt.event.WindowAdapter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import javax.swing.DefaultListModel;
+import javax.swing.event.ListSelectionEvent;
 
 /**
  *
@@ -20,7 +22,9 @@ import javax.swing.DefaultListModel;
 public class ChatGUI extends javax.swing.JFrame {
     
     private Controller controller;
-    private DefaultListModel listModel;
+    private DefaultListModel listModelActiveUsers;
+    private DefaultListModel listModelOtherMessages;
+    private Sender currentSender;
     /**
      * Creates new form ChatGUI
      * @param myPseudo
@@ -31,8 +35,10 @@ public class ChatGUI extends javax.swing.JFrame {
         initComponents();
         
         this.controller = controller;
-        this.listModel = new DefaultListModel();
-        jList1ActiveUsers.setModel(listModel);
+        this.listModelActiveUsers = new DefaultListModel();
+        this.listModelOtherMessages = new DefaultListModel();
+        jListActiveUsers.setModel(listModelActiveUsers);
+        jListOtherMessages.setModel(listModelOtherMessages);
         
         setLocationRelativeTo(null);
         
@@ -47,8 +53,21 @@ public class ChatGUI extends javax.swing.JFrame {
     }
     
     // Getters
+    public Controller getController() { return this.controller; }
+    
     public javax.swing.JLabel getMyPseudoGUI() { return this.myPsudonym; }
-    public DefaultListModel getListModel() { return this.listModel; }
+    public DefaultListModel getListModelActiveUsers() { return this.listModelActiveUsers; }
+    public DefaultListModel getListModelOtherMessages() { return this.listModelOtherMessages; }
+    public Sender getCurrentSenderGUI() { return this.currentSender; }
+    
+    public javax.swing.JTextArea getTextAreaHistory() { return this.jTextAreaHistory; }
+    public javax.swing.JTextField getTextFieldSend() { return this.jTextFieldSend; }
+    public javax.swing.JList<String> getListActiveUsers() { return this.jListActiveUsers; }
+    public javax.swing.JList<String>  getListOtherMessages() { return this.jListOtherMessages; }
+    
+    // Setters
+    public void setCurrentSenderGUI(Sender snd) { this.currentSender = snd;}
+    
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -61,18 +80,19 @@ public class ChatGUI extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         myPsudonym = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        jTextField1 = new javax.swing.JTextField();
+        jTextFieldSend = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jButton1Send = new javax.swing.JButton();
-        jButton2Change = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jScrollBar1 = new javax.swing.JScrollBar();
-        jScrollBar2 = new javax.swing.JScrollBar();
+        jButtonSend = new javax.swing.JButton();
+        jButtonChangePseudo = new javax.swing.JButton();
+        jButtonSendImage = new javax.swing.JButton();
+        jButtonSendFile = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jList1ActiveUsers = new javax.swing.JList<>();
+        jListActiveUsers = new javax.swing.JList<>();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextAreaHistory = new javax.swing.JTextArea();
+        jLabel3 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jListOtherMessages = new javax.swing.JList<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -80,145 +100,159 @@ public class ChatGUI extends javax.swing.JFrame {
 
         myPsudonym.setText("<<Pseudonym>>");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jTextArea1.setDragEnabled(true);
-        jScrollPane1.setViewportView(jTextArea1);
-
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        jTextFieldSend.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                jTextFieldSendActionPerformed(evt);
             }
         });
 
         jLabel2.setText("Choose Active User:");
 
-        jButton1Send.setText("Send");
-        jButton1Send.addActionListener(new java.awt.event.ActionListener() {
+        jButtonSend.setText("Send");
+        jButtonSend.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1SendActionPerformed(evt);
+                jButtonSendActionPerformed(evt);
             }
         });
 
-        jButton2Change.setText("Change");
-        jButton2Change.addActionListener(new java.awt.event.ActionListener() {
+        jButtonChangePseudo.setText("Change");
+        jButtonChangePseudo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ChangeActionPerformed(evt);
+                jButtonChangePseudoActionPerformed(evt);
             }
         });
 
-        jButton3.setText("Send Image");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        jButtonSendImage.setText("Send Image");
+        jButtonSendImage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                jButtonSendImageActionPerformed(evt);
             }
         });
 
-        jButton4.setText("Send File");
+        jButtonSendFile.setText("Send File");
 
-        jScrollPane3.setViewportView(jList1ActiveUsers);
+        jListActiveUsers.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jList1ActiveUsersListSelectionListener(evt);
+            }
+        });
+        jScrollPane3.setViewportView(jListActiveUsers);
+
+        jTextAreaHistory.setEditable(false);
+        jTextAreaHistory.setColumns(20);
+        jTextAreaHistory.setRows(5);
+        jScrollPane1.setViewportView(jTextAreaHistory);
+
+        jLabel3.setText("Messages from other users:");
+
+        jScrollPane4.setViewportView(jListOtherMessages);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(36, 36, 36)
+                .addGap(33, 33, 33)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollBar2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(17, 17, 17)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(264, 264, 264)
+                                .addComponent(jButtonSendImage)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonSendFile))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jTextFieldSend)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonSend, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(myPsudonym)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2Change)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1Send, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton4)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                        .addComponent(jButtonChangePseudo)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(myPsudonym)
+                    .addComponent(jButtonChangePseudo))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(myPsudonym)
-                            .addComponent(jButton2Change))
-                        .addGap(18, 18, 18)
+                            .addComponent(jButtonSendImage)
+                            .addComponent(jButtonSendFile))
+                        .addGap(9, 9, 9)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButtonSend)
+                            .addComponent(jTextFieldSend, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(51, 51, 51))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
-                            .addComponent(jScrollPane3)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1Send)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(24, 24, 24))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void jTextFieldSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldSendActionPerformed
+        this.controller.sendTextMessageChatGUI(this);
+    }//GEN-LAST:event_jTextFieldSendActionPerformed
+
+    private void jButtonSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSendActionPerformed
+        this.controller.sendTextMessageChatGUI(this);
+    }//GEN-LAST:event_jButtonSendActionPerformed
+
+    private void jButtonSendImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSendImageActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_jButtonSendImageActionPerformed
 
-    private void jButton1SendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1SendActionPerformed
-        try {
-            Sender snd = new Sender(InetAddress.getByName("10.1.5.86"), 2077, netInterface.getActiveUsers());
-            netInterface.sendMessageToUser(snd);
-        } catch (UnknownHostException ex) {}
-    }//GEN-LAST:event_jButton1SendActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jButton2ChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ChangeActionPerformed
+    private void jButtonChangePseudoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonChangePseudoActionPerformed
         this.controller.setChangePseudonym(true);
         new PseudonymGUI(this.controller, this).setVisible(true);
         this.setVisible(false); 
-    }//GEN-LAST:event_jButton2ChangeActionPerformed
-
+    }//GEN-LAST:event_jButtonChangePseudoActionPerformed
+    private void jList1ActiveUsersListSelectionListener(javax.swing.event.ListSelectionEvent evt) {
+        if (!evt.getValueIsAdjusting()) {
+            this.controller.selectActiveUserGUI(this);
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1Send;
-    private javax.swing.JButton jButton2Change;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButtonChangePseudo;
+    private javax.swing.JButton jButtonSend;
+    private javax.swing.JButton jButtonSendFile;
+    private javax.swing.JButton jButtonSendImage;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JList<String> jList1ActiveUsers;
-    private javax.swing.JScrollBar jScrollBar1;
-    private javax.swing.JScrollBar jScrollBar2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JList<String> jListActiveUsers;
+    private javax.swing.JList<String> jListOtherMessages;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JTextArea jTextAreaHistory;
+    private javax.swing.JTextField jTextFieldSend;
     private javax.swing.JLabel myPsudonym;
     // End of variables declaration//GEN-END:variables
 }

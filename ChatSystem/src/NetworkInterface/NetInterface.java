@@ -24,8 +24,8 @@ public class NetInterface{
     
     public NetInterface(ChatGUI chatGUI){
         
-        this.activeUserList = new ActiveUsers(chatGUI);
-        this.rcv = new Receiver(this.unicastPort, activeUserList);
+        this.activeUserList = new ActiveUsers(chatGUI, unicastPort);
+        this.rcv = new Receiver(chatGUI, this.unicastPort, activeUserList);
         this.multiSnd = new MulticastSender(this.multicastAddr, this.multicastPort);
         this.multiRcv = new MulticastReceiver(this.multicastAddr, this.multicastPort, activeUserList, this.unicastPort);
         startReceiver();
@@ -53,7 +53,7 @@ public class NetInterface{
         this.multiSnd.Send(status);
     }
     
-    public void sendMessageToUser(Sender snd) {
-        snd.send();
+    public void sendMessageToUser(Sender snd, String msgType, String message) {
+        snd.send(msgType, message);
     }
 }

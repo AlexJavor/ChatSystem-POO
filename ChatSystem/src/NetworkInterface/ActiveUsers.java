@@ -18,88 +18,33 @@ public class ActiveUsers {
     
     // Attributes
     private ArrayList<User> userList;
+    private ArrayList<Sender> senderList;
     private ChatGUI chatGUI;
+    private int unicastPort;
+    
     // Constructor
-    public ActiveUsers(ChatGUI chatGUI){
+    public ActiveUsers(ChatGUI chatGUI, int unicastPort){
         this.userList = new ArrayList<>();
+        this.senderList = new ArrayList<>();
         this.chatGUI = chatGUI;
+        this.unicastPort = unicastPort;
     }
     
-    // Getters
+    // *********************************** Getters ************************************** //
     public ArrayList<User> getActiveUsers(){ return this.userList; }
+    public ArrayList<Sender> getActiveSenders(){ return this.senderList; }
     
-    // Methods
-    // Adds active user if its pseudonym is not already on the list: It ignores the new one.
-    public void addActiveUser(User usr){
-        if (!this.containsSamePseudonym(usr.getPseudonym())){
-            this.userList.add(usr);
-            this.chatGUI.getListModel().addElement(usr.getPseudonym());
-        }
-    }
-    
-    public void updateActiveUser(User usr){
-        // Remove previous entry
-        this.userList.remove(usr);
-        // Check where is the user to update and change its pseudo
-        if (!this.containsSamePseudonym(usr.getPseudonym())){
-            // Take user index
-            User iterUser;
-            int index = 0;
-            Iterator<User> iter = this.userList.iterator();
-            while(iter.hasNext()){
-                iterUser = iter.next();
-                if(iterUser.equals(usr)){
-                    break;
-                }
-                index++;
-            }
-            this.userList.add(usr);
-            this.chatGUI.getListModel().setElementAt(usr.getPseudonym(),index);
-        }
-    }
-    
-    public void removeActiveUser(User usr){ 
-        this.userList.remove(usr);
-        // Take user index
-        User iterUser;
-        int index = 0;
-        Iterator<User> iter = this.userList.iterator();
+    public Sender getSenderFromIP(InetAddress ipAddr) {
+        Sender snd;
+        Iterator<Sender> iter = this.senderList.iterator();
+        snd = iter.next();
         while(iter.hasNext()){
-            iterUser = iter.next();
-            if(iterUser.equals(usr)){
+            if(snd.getSenderIPAddress().equals(ipAddr)){
                 break;
             }
-            index++;
+            snd = iter.next();
         }
-        // Delete user from GUI list
-        this.chatGUI.getListModel().remove(index);
-    }
-    
-    public boolean containsSamePseudonym(String pseudo){
-        boolean exists = false;
-        User usr;
-        Iterator<User> iter = this.userList.iterator();
-        while(iter.hasNext()){
-            usr = iter.next();
-            if(usr.getPseudonym().equals(pseudo)){
-                exists = true;
-            }
-        }
-        return exists;
-    }
-    
-        
-    public boolean containsUser(String macAddress){
-        boolean exists = false;
-        User usr;
-        Iterator<User> iter = this.userList.iterator();
-        while(iter.hasNext()){
-            usr = iter.next();
-            if(usr.getMACAddress().equals(macAddress)){
-                exists = true;
-            }
-        }
-        return exists;
+        return snd;
     }
     
     public User getUserFromPseudo(String pseudo){
@@ -141,6 +86,90 @@ public class ActiveUsers {
         }
         return usr;
     }
+    
+    // ******************************** Methods ********************************************* //
+    // Adds active user if its pseudonym is not already on the list: It ignores the new one.
+    public void addActiveUser(User usr){
+        if (!this.containsSamePseudonym(usr.getPseudonym())){
+            // Adding user to list
+            this.userList.add(usr);
+            // Adding sender to list
+            Sender snd = new Sender(usr.getIPAddress(), this.unicastPort, this);
+            this.senderList.add(snd);
+            // Print the new user in the chatGUI
+            this.chatGUI.getListModelActiveUsers().addElement(usr.getPseudonym());
+        }
+    }
+    
+    public void updateActiveUser(User usr){
+        // Remove previous entry
+        this.userList.remove(usr);
+        // Check where is the user to update and change its pseudo
+        if (!this.containsSamePseudonym(usr.getPseudonym())){
+            // Take user index
+            User iterUser;
+            int index = 0;
+            Iterator<User> iter = this.userList.iterator();
+            while(iter.hasNext()){
+                iterUser = iter.next();
+                if(iterUser.equals(usr)){
+                    break;
+                }
+                index++;
+            }
+            this.userList.add(usr);
+            this.chatGUI.getListModelActiveUsers().setElementAt(usr.getPseudonym(),index);
+        }
+    }
+    
+    public void removeActiveUser(User usr){
+        // Remove active user
+        this.userList.remove(usr);
+        // Remove corresponding sender
+        Sender snd = getSenderFromIP(usr.getIPAddress());
+        this.senderList.remove(snd);
+        // Take user index
+        User iterUser;
+        int index = 0;
+        Iterator<User> iter = this.userList.iterator();
+        while(iter.hasNext()){
+            iterUser = iter.next();
+            if(iterUser.equals(usr)){
+                break;
+            }
+            index++;
+        }
+        // Delete user from GUI list
+        this.chatGUI.getListModelActiveUsers().remove(index);
+    }
+    
+    public boolean containsSamePseudonym(String pseudo){
+        boolean exists = false;
+        User usr;
+        Iterator<User> iter = this.userList.iterator();
+        while(iter.hasNext()){
+            usr = iter.next();
+            if(usr.getPseudonym().equals(pseudo)){
+                exists = true;
+            }
+        }
+        return exists;
+    }
+    
+        
+    public boolean containsUser(String macAddress){
+        boolean exists = false;
+        User usr;
+        Iterator<User> iter = this.userList.iterator();
+        while(iter.hasNext()){
+            usr = iter.next();
+            if(usr.getMACAddress().equals(macAddress)){
+                exists = true;
+            }
+        }
+        return exists;
+    }
+   
     
     @Override
     public String toString() {

@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package NetworkInterface;
+import GUI.ChatGUI;
 import MainChat.*;
 import HistoryLogs.*;
 import static MainChat.ChatSystem.myUser;
@@ -24,10 +25,12 @@ import javax.imageio.ImageIO;
 public class Receiver implements Runnable{
     private final int port;
     private final ActiveUsers activeUserList;
+    private ChatGUI chatGUI;
     
-    public Receiver(int port, ActiveUsers activeUserList){
+    public Receiver(ChatGUI chatGUI, int port, ActiveUsers activeUserList){
         this.port = port;
         this.activeUserList = activeUserList;
+        this.chatGUI = chatGUI;
     }
     
     /**
@@ -83,8 +86,8 @@ public class Receiver implements Runnable{
                         String stringText = new String(bytePayload);
                         //System.out.println("Text Payload: " + stringText);
                         // **** Print Constructed Text Message **** //
-                        System.out.println(stringPseudo + ": " + stringText);
-                        
+                        this.chatGUI.getController().receiverManagerGUI(this.chatGUI, stringPseudo,stringText);                                
+                        //System.out.println(stringPseudo + ": " + stringText + "\n");                       
                         typeMsg = "t";
                         contentMsg = stringText;
                         
