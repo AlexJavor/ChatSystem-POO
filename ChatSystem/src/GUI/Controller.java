@@ -125,7 +125,8 @@ public class Controller {
             // Sending message
             netInterface.sendMessageToUser(chatGUI.getCurrentSenderGUI(), "t", message, dateMsg);   
             chatGUI.getTextFieldSend().setText("");
-            chatGUI.getTextAreaHistory().append(myUser.getPseudonym() + "(me): " + message + "\n" + dateMsg + "\n\n");    
+            chatGUI.getTextAreaHistory().append(myUser.getPseudonym() + "(me): " + message + "\n" + dateMsg + "\n\n");
+            chatGUI.getTextAreaHistory().setCaretPosition(chatGUI.getTextAreaHistory().getDocument().getLength());
         }
     }
     
@@ -134,6 +135,7 @@ public class Controller {
         if(selectedActiveUser == null ? stringPseudo == null : selectedActiveUser.equals(stringPseudo)) {
             String fullMessage = stringPseudo + ": " + stringText + "\n" + dateMsg + "\n\n";
             chatGUI.getTextAreaHistory().append(fullMessage);
+            chatGUI.getTextAreaHistory().setCaretPosition(chatGUI.getTextAreaHistory().getDocument().getLength());
         } else {
             String notificationMessage = "New message(s) from " + stringPseudo;
             if(!chatGUI.getListModelOtherMessages().contains(notificationMessage)){

@@ -40,13 +40,6 @@ public class ChatGUI extends javax.swing.JFrame {
         this.listModelOtherMessages = new DefaultListModel();
         jListActiveUsers.setModel(listModelActiveUsers);
         jListOtherMessages.setModel(listModelOtherMessages);
-        
-        // Text area always update (always to the bottom)
-        DefaultCaret caret = (DefaultCaret) jTextAreaHistory.getCaret();
-        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-        
-        // Text area wrap
-        //jTextAreaHistory.setWrapStyleWord(true);
                 
         // Set frame to the center
         setLocationRelativeTo(null);
@@ -152,6 +145,7 @@ public class ChatGUI extends javax.swing.JFrame {
         jTextAreaHistory.setLineWrap(true);
         jTextAreaHistory.setRows(5);
         jTextAreaHistory.setWrapStyleWord(true);
+        jTextAreaHistory.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jScrollPane1.setViewportView(jTextAreaHistory);
 
         jLabel3.setText("Messages from other users:");
