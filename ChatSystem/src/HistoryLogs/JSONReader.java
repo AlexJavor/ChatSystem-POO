@@ -66,7 +66,7 @@ public class JSONReader {
         String pseudo = (String) prsn.get("Pseudonym");
         String ipAddr = (String) prsn.get("IPAddress");
 
-        User p = new User(macAddr, ipAddr, pseudo);
+        User p = new User(pseudo, ipAddr, macAddr);
         return p;
     }
     

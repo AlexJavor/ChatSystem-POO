@@ -6,6 +6,8 @@
 package GUI;
 
 import HistoryLogs.DateLog;
+import static HistoryLogs.JSONReader.read;
+import HistoryLogs.MessageLog;
 import static MainChat.ChatSystem.myUser;
 import static MainChat.ChatSystem.netInterface;
 import MainChat.User;
@@ -21,6 +23,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import java.awt.event.ActionEvent;
+import java.io.File;
 /**
  *
  * @author alexjavor
@@ -94,13 +97,15 @@ public class Controller {
              // Clearing text area
             chatGUI.getTextAreaHistory().setText("");    
         } else {
-            // Clearing text area
-            chatGUI.getTextAreaHistory().setText(""); // TODO load history file if it exists else setText("")
             // Setting current sender
             String selectedPseudo = chatGUI.getListActiveUsers().getSelectedValue();
-            User selectedUser = netInterface.getActiveUsers().getUserFromPseudo(selectedPseudo);
+            User selectedUser = netInterface.getActiveUsers().getUserFromPseudo(selectedPseudo); 
             Sender snd = netInterface.getActiveUsers().getSenderFromIP(selectedUser.getIPAddress());
             chatGUI.setCurrentSenderGUI(snd);
+            
+            // Load history file if it exists else setText("")
+            loadHistoryFile(chatGUI, selectedUser);
+
             // Delete notification
             String notificationMessage = "New message(s) from " + selectedPseudo;
             if(chatGUI.getListModelOtherMessages().contains(notificationMessage)){
@@ -134,6 +139,32 @@ public class Controller {
             if(!chatGUI.getListModelOtherMessages().contains(notificationMessage)){
                 chatGUI.getListModelOtherMessages().addElement(notificationMessage);
             }
+        }
+    }
+    
+    private void loadHistoryFile(ChatGUI chatGUI, User selectedUser){
+        String jsonChatFile = "./JSONFiles/Chat_" + selectedUser.getMACAddress().replaceAll(":", "-") + ".json";
+        if(new File(jsonChatFile).isFile()){
+            ArrayList<MessageLog> MessageLogList = read(jsonChatFile);
+            String fullMessageLog = "";
+            String currentMessageLog;
+            String currentSenderPseudo;
+            MessageLog iterMessageLog;
+            Iterator<MessageLog> iter = MessageLogList.iterator();
+            while (iter.hasNext()){
+                iterMessageLog = iter.next();
+                // Check who send it: if the sender has the your MAC address its you
+                if(iterMessageLog.getSender().getMACAddress().equals(myUser.getMACAddress())){
+                    currentSenderPseudo = myUser.getPseudonym() + "(me)";
+                } else {
+                    currentSenderPseudo = selectedUser.getPseudonym();
+                }
+                currentMessageLog = currentSenderPseudo + ": " + iterMessageLog.getContent() + "\n" + iterMessageLog.getDate() + "\n\n";
+                fullMessageLog += currentMessageLog;
+            }
+            chatGUI.getTextAreaHistory().setText(fullMessageLog);
+        } else  {
+            chatGUI.getTextAreaHistory().setText("");     
         }
     }
 }

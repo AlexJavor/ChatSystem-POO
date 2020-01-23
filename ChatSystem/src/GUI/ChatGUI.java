@@ -14,6 +14,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import javax.swing.DefaultListModel;
 import javax.swing.event.ListSelectionEvent;
+import javax.swing.text.DefaultCaret;
 
 /**
  *
@@ -40,6 +41,14 @@ public class ChatGUI extends javax.swing.JFrame {
         jListActiveUsers.setModel(listModelActiveUsers);
         jListOtherMessages.setModel(listModelOtherMessages);
         
+        // Text area always update (always to the bottom)
+        DefaultCaret caret = (DefaultCaret) jTextAreaHistory.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+        
+        // Text area wrap
+        //jTextAreaHistory.setWrapStyleWord(true);
+                
+        // Set frame to the center
         setLocationRelativeTo(null);
         
         
@@ -140,7 +149,9 @@ public class ChatGUI extends javax.swing.JFrame {
 
         jTextAreaHistory.setEditable(false);
         jTextAreaHistory.setColumns(20);
+        jTextAreaHistory.setLineWrap(true);
         jTextAreaHistory.setRows(5);
+        jTextAreaHistory.setWrapStyleWord(true);
         jScrollPane1.setViewportView(jTextAreaHistory);
 
         jLabel3.setText("Messages from other users:");
