@@ -5,6 +5,7 @@
  */
 package GUI;
 
+import HistoryLogs.DateLog;
 import static MainChat.ChatSystem.myUser;
 import static MainChat.ChatSystem.netInterface;
 import MainChat.User;
@@ -114,16 +115,19 @@ public class Controller {
             JOptionPane.showMessageDialog(null, "Please select an active user");
         } else {
             String message = chatGUI.getTextFieldSend().getText();
-            netInterface.sendMessageToUser(chatGUI.getCurrentSenderGUI(), "t", message);   
+            // Getting current date
+            DateLog dateMsg = DateLog.getCurrentDate();
+            // Sending message
+            netInterface.sendMessageToUser(chatGUI.getCurrentSenderGUI(), "t", message, dateMsg);   
             chatGUI.getTextFieldSend().setText("");
-            chatGUI.getTextAreaHistory().append(myUser.getPseudonym() + "(me): " + message + "\n");    
+            chatGUI.getTextAreaHistory().append(myUser.getPseudonym() + "(me): " + message + "\n" + dateMsg + "\n\n");    
         }
     }
     
-    public void receiverManagerGUI(ChatGUI chatGUI, String stringPseudo, String stringText){
+    public void receiverManagerGUI(ChatGUI chatGUI, String stringPseudo, String stringText, DateLog dateMsg){
         String selectedActiveUser = chatGUI.getListActiveUsers().getSelectedValue();
         if(selectedActiveUser == null ? stringPseudo == null : selectedActiveUser.equals(stringPseudo)) {
-            String fullMessage = stringPseudo + ": " + stringText + "\n";
+            String fullMessage = stringPseudo + ": " + stringText + "\n" + dateMsg + "\n\n";
             chatGUI.getTextAreaHistory().append(fullMessage);
         } else {
             String notificationMessage = "New message(s) from " + stringPseudo;

@@ -31,7 +31,7 @@ public class Sender{
     public InetAddress getSenderIPAddress() { return this.host; }
     
     // Methods
-    public void send(String msgType, String inMessage){
+    public void send(String msgType, String inMessage, DateLog dateMsg){
         try{
             //BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
             //String msgType = bufferRead.readLine();
@@ -44,6 +44,7 @@ public class Sender{
                 String contentMsg = null;
 
                 byte[] byteMsg;
+                
                 switch (msgType){
                     case "t" :
                         //bufferRead = new BufferedReader(new InputStreamReader(System.in));
@@ -71,7 +72,6 @@ public class Sender{
                 if (!(typeMsg == null && contentMsg == null)){
                     User senderMsg = myUser;
                     User receiverMsg = this.activeUserList.getUserFromIP(this.host);
-                    DateLog dateMsg = DateLog.getCurrentDate();
 
                     // Creating a new JSON file in the case this communication is new
                     // Current directory : /home/salinasg/Bureau/ChatSystem-POO/ChatSystem

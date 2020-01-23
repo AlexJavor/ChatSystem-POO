@@ -10,6 +10,7 @@ import MainChat.User;
 import Messages.*;
 import java.io.*;
 import java.net.*;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -105,6 +106,10 @@ public class MulticastReceiver implements Runnable {
                             // Changing new user's pseudonym name
                             System.out.println("New user changed pseudonym!");
                             this.newUser = this.activeUserList.getActiveUserFromMAC(this.newUserMACAdress);
+                            //////////////////////////// Creating alert of new user changed psuedo //////////////////////////////////////////
+                            String pseudoChangedMessage = this.newUser.getPseudonym() + " changed his pseudonym to " + this.newUserPseudonym;
+                            JOptionPane.showMessageDialog(null, pseudoChangedMessage);
+                            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                             this.newUser.setPseudonym(this.newUserPseudonym);
                             this.activeUserList.updateActiveUser(this.newUser);
                         } else if (this.newUserINActiveUserList && this.newUserStatus.equals("Status:DISCONNECTED")) {

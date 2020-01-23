@@ -80,13 +80,15 @@ public class Receiver implements Runnable{
                 while (totalRead < sizePayload && (currentRead = inStream.read(bytePayload, totalRead, sizePayload-totalRead)) > 0) {
                     totalRead += currentRead;
                 }
+                // Getting current Date
+                DateLog dateMsg = DateLog.getCurrentDate();
 
                 switch (messageType) {
                     case 't':
                         String stringText = new String(bytePayload);
                         //System.out.println("Text Payload: " + stringText);
                         // **** Print Constructed Text Message **** //
-                        this.chatGUI.getController().receiverManagerGUI(this.chatGUI, stringPseudo,stringText);                                
+                        this.chatGUI.getController().receiverManagerGUI(this.chatGUI, stringPseudo, stringText, dateMsg);                                
                         //System.out.println(stringPseudo + ": " + stringText + "\n");                       
                         typeMsg = "t";
                         contentMsg = stringText;
@@ -137,7 +139,6 @@ public class Receiver implements Runnable{
                     // **** Getting some information to write the message in the HistoryLog associated to this conversation **** //
                     User senderMsg = this.activeUserList.getUserFromPseudo(stringPseudo);
                     User receiverMsg = myUser;
-                    DateLog dateMsg = DateLog.getCurrentDate();
                     
                     // Creating a new JSON file in the case this communication is new
                     // Current directory : /home/salinasg/Bureau/ChatSystem-POO/ChatSystem                    

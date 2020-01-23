@@ -5,6 +5,7 @@
  */
 package NetworkInterface;
 import GUI.ChatGUI;
+import HistoryLogs.DateLog;
 /**
  *
  * @author salinasg
@@ -53,7 +54,7 @@ public class NetInterface{
         this.multiSnd.Send(status);
     }
     
-    public void sendMessageToUser(Sender snd, String msgType, String message) {
-        snd.send(msgType, message);
+    public void sendMessageToUser(Sender snd, String msgType, String message, DateLog dateMsg) {
+        snd.send(msgType, message, dateMsg);
     }
 }
