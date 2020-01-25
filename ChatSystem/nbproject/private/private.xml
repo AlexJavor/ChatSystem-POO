@@ -5,11 +5,11 @@
         <group>
             <file>file:/home/alexjavor/Desktop/INSA/4emeAnnee/ChatSystem-POO/ChatSystem/src/NetworkInterface/Receiver.java</file>
             <file>file:/home/alexjavor/Desktop/INSA/4emeAnnee/ChatSystem-POO/ChatSystem/src/GUI/ChatGUI.java</file>
+            <file>file:/home/alexjavor/Desktop/INSA/4emeAnnee/ChatSystem-POO/ChatSystem/src/NetworkInterface/MulticastReceiver.java</file>
             <file>file:/home/alexjavor/Desktop/INSA/4emeAnnee/ChatSystem-POO/ChatSystem/src/GUI/Controller.java</file>
-            <file>file:/home/alexjavor/Desktop/INSA/4emeAnnee/ChatSystem-POO/ChatSystem/src/NetworkInterface/Sender.java</file>
-            <file>file:/home/alexjavor/Desktop/INSA/4emeAnnee/ChatSystem-POO/ChatSystem/src/MainChat/User.java</file>
+            <file>file:/home/alexjavor/Desktop/INSA/4emeAnnee/ChatSystem-POO/ChatSystem/src/NetworkInterface/NetInterface.java</file>
             <file>file:/home/alexjavor/Desktop/INSA/4emeAnnee/ChatSystem-POO/ChatSystem/src/MainChat/ChatSystem.java</file>
-            <file>file:/home/alexjavor/Desktop/INSA/4emeAnnee/ChatSystem-POO/ChatSystem/src/HistoryLogs/MessageLog.java</file>
+            <file>file:/home/alexjavor/Desktop/INSA/4emeAnnee/ChatSystem-POO/ChatSystem/src/NetworkInterface/ActiveUsers.java</file>
         </group>
     </open-files>
 </project-private>

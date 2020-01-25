@@ -138,12 +138,13 @@ public class ActiveUsers {
     }
     
     public void removeActiveUser(User usr){
+        System.out.println("removing active user");
         // Remove active user
         this.userList.remove(usr);
         // Remove corresponding sender
         Sender snd = getSenderFromIP(usr.getIPAddress());
         this.senderList.remove(snd);
-        // Take user index
+        // Take user index        this.chatGUI.getListModelActiveUsers().remove(index);
         User iterUser;
         int index = 0;
         Iterator<User> iter = this.userList.iterator();
@@ -155,7 +156,16 @@ public class ActiveUsers {
             index++;
         }
         // Delete user from GUI list
-        this.chatGUI.getListModelActiveUsers().remove(index);
+        System.out.println("index GUI:" + index);
+        
+        // GUI remove correct user
+        ListModel model = this.chatGUI.getListModelActiveUsers();
+        for(int i=0; i < model.getSize(); i++) {
+            String str = (String) model.getElementAt(i);
+            if(str.equals(usr.getPseudonym())){
+                this.chatGUI.getListModelActiveUsers().remove(i);
+            }
+        }
     }
     
     public boolean containsSamePseudonym(String pseudo){
