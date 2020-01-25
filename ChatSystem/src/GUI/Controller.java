@@ -131,13 +131,14 @@ public class Controller {
     }
     
     public void receiverManagerGUI(ChatGUI chatGUI, String stringPseudo, String stringText, DateLog dateMsg){
+        User user = netInterface.getActiveUsers().getUserFromPseudo(stringPseudo);
         String selectedActiveUser = chatGUI.getListActiveUsers().getSelectedValue();
-        if(selectedActiveUser == null ? stringPseudo == null : selectedActiveUser.equals(stringPseudo)) {
-            String fullMessage = stringPseudo + ": " + stringText + "\n" + dateMsg + "\n\n";
+        if(selectedActiveUser == null ? user.getPseudonym() == null : selectedActiveUser.equals(user.getPseudonym())) {
+            String fullMessage = user.getPseudonym() + ": " + stringText + "\n" + dateMsg + "\n\n";
             chatGUI.getTextAreaHistory().append(fullMessage);
             chatGUI.getTextAreaHistory().setCaretPosition(chatGUI.getTextAreaHistory().getDocument().getLength());
         } else {
-            String notificationMessage = "New message(s) from " + stringPseudo;
+            String notificationMessage = "New message(s) from " + user.getPseudonym();
             if(!chatGUI.getListModelOtherMessages().contains(notificationMessage)){
                 chatGUI.getListModelOtherMessages().addElement(notificationMessage);
             }

@@ -10,6 +10,7 @@ import static MainChat.ChatSystem.myUser;
 import MainChat.User;
 import java.net.InetAddress;
 import java.util.*;
+import javax.swing.ListModel;
 
 /**
  *
@@ -122,6 +123,17 @@ public class ActiveUsers {
             System.out.println("index GUI:" + index);
             //this.userList.add(newUsr);
             this.chatGUI.getListModelActiveUsers().setElementAt(newPseudo,index);
+            
+            // Change other messages received pseudo
+            String messagesWithNewPseudo = "New message(s) from " + newPseudo;
+            String messagesWithOldPseudo = "New message(s) from " + usr.getPseudonym();
+            ListModel model = this.chatGUI.getListModelOtherMessages();
+            for(int i=0; i < model.getSize(); i++) {
+                String str = (String) model.getElementAt(i);
+                if(str.equals(messagesWithOldPseudo)){
+                    this.chatGUI.getListModelOtherMessages().setElementAt(messagesWithNewPseudo, i);
+                }
+            }
         }
     }
     

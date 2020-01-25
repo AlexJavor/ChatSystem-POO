@@ -113,14 +113,16 @@ public class MulticastReceiver implements Runnable {
                             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                             this.activeUserList.updateActiveUser(this.newUser, this.newUserPseudonym);
                             this.newUser.setPseudonym(this.newUserPseudonym);
-                        } else if (this.newUserINActiveUserList && this.newUserStatus.equals("Status:DISCONNECTED")) {
-                            this.newUser = this.activeUserList.getActiveUserFromMAC(this.newUserMACAdress);
-                            this.activeUserList.removeActiveUser(this.newUser);
                         } else {
                             System.out.println("Status unrecognised / User error? - check MulitcastReceiver");
                         }
                     } else {
-                        System.out.println("Omiting new user with the same pseudonym as me");
+                        if(this.newUserStatus.equals("Status:DISCONNECTED")){
+                            this.newUser = this.activeUserList.getActiveUserFromMAC(this.newUserMACAdress);
+                            this.activeUserList.removeActiveUser(this.newUser);
+                        } else {
+                            System.out.println("Omiting new user with the same pseudonym as me");
+                        }                       
                     }
                     System.out.println(activeUserList.toString());
                     // Reply the new user only if he is trying to connect
