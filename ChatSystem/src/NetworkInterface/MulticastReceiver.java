@@ -94,7 +94,7 @@ public class MulticastReceiver implements Runnable {
                 // Check if it is an autoreceive message
                 if (!this.newUserIPAddress.toString().equals(myUser.getIPAddress().toString())) {
                     // Check if the new user has a different pseudo as you
-                    if(!this.newUserPseudonym.equals(myUser.getPseudonym())){
+                    if(this.activeUserList.newPseudoIsValid(this.newUserPseudonym)){
                         // Check if new user has same MAC address as someone of the ActiveUsers list + verify status
                         this.newUserINActiveUserList = this.activeUserList.containsUser(this.newUserMACAdress);
                         

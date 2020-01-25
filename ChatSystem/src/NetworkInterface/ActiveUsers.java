@@ -6,6 +6,7 @@
 package NetworkInterface;
 
 import GUI.ChatGUI;
+import static MainChat.ChatSystem.myUser;
 import MainChat.User;
 import java.net.InetAddress;
 import java.util.*;
@@ -170,6 +171,10 @@ public class ActiveUsers {
             }
         }
         return exists;
+    }
+    
+    public boolean newPseudoIsValid(String newPseudo) {
+        return (!newPseudo.equals(myUser.getPseudonym()) && !this.containsSamePseudonym(newPseudo));
     }
    
     
