@@ -101,11 +101,12 @@ public class ActiveUsers {
         }
     }
     
-    public void updateActiveUser(User usr){
+    public void updateActiveUser(User usr, String newPseudo){
         // Remove previous entry
-        this.userList.remove(usr);
+        //this.userList.remove(getUserFromPseudo());
+        System.out.println("old pseudo:" + usr.getPseudonym() + "new pseudo: " + newPseudo);
         // Check where is the user to update and change its pseudo
-        if (!this.containsSamePseudonym(usr.getPseudonym())){
+        if (this.containsSamePseudonym(usr.getPseudonym())){
             // Take user index
             User iterUser;
             int index = 0;
@@ -117,8 +118,9 @@ public class ActiveUsers {
                 }
                 index++;
             }
-            this.userList.add(usr);
-            this.chatGUI.getListModelActiveUsers().setElementAt(usr.getPseudonym(),index);
+            System.out.println("index GUI:" + index);
+            //this.userList.add(newUsr);
+            this.chatGUI.getListModelActiveUsers().setElementAt(newPseudo,index);
         }
     }
     

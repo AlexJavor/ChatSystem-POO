@@ -23,8 +23,8 @@ public class ChatSystem {
             // *** Create current user with the obtained Pseudonym, IP Address and MAC Address *** //
             // myPseudonym null when starting
             String myPseudonym = null;
-            //InetAddress myIpAddr = getMyLocalIPAddress();
-            InetAddress myIpAddr = InetAddress.getByName("192.168.1.1"); // Tested locally
+            InetAddress myIpAddr = getMyLocalIPAddress();
+            //InetAddress myIpAddr = InetAddress.getByName("192.168.1.1"); // Tested locally
             String myMacAddr = getMyMacAddress(myIpAddr);
             
             System.out.println("System IP Address  : " + (myIpAddr.getHostAddress()).trim());
@@ -40,7 +40,7 @@ public class ChatSystem {
             chatUI.setVisible(false);
             psuedoUI.setVisible(true);
             
-        } catch (UnknownHostException /*| SocketException*/ e) {}
+        } catch (/*UnknownHostException |*/ SocketException e) {}
     }
     
     public static InetAddress getMyLocalIPAddress() throws SocketException {
