@@ -56,13 +56,12 @@ public class Sender{
                         typeMsg = "t";
                         contentMsg = inMessage;
                         break;
-                    case "i":
-                        String imagePath = "/home/salinasg/Bureau/ImageSend/img2.jpg";
-                        ImageMessage imMsg = new ImageMessage(myUser.getPseudonym(), imagePath);
+                    case "i": 
+                        ImageMessage imMsg = new ImageMessage(myUser.getPseudonym(), inMessage);
                         byteMsg = imMsg.getBytesMessage();
 
                         typeMsg = "i";
-                        contentMsg = imagePath;
+                        contentMsg = inMessage;
                         break;
                     default :
                         byteMsg = new byte[1];
@@ -76,9 +75,9 @@ public class Sender{
                     // Creating a new JSON file in the case this communication is new
                     // Current directory : /home/salinasg/Bureau/ChatSystem-POO/ChatSystem
                     String fileName = "Chat_" + receiverMsg.getMACAddress().replace(":", "-") + ".json";
-                    JSONGenerator.generate("./JSONFiles/", fileName);
+                    JSONGenerator.generate("../../JSONFiles/", fileName);
                     MessageLog message = new MessageLog(typeMsg, senderMsg, receiverMsg, contentMsg, dateMsg);
-                    JSONWriter.write("./JSONFiles/" + fileName, message);
+                    JSONWriter.write("../../JSONFiles/" + fileName, message);
                 }
 
 
