@@ -70,7 +70,7 @@ public class Controller {
                 firstConnection = false;
             } else {
                 if(changePseudonym){
-                    netInterface.sendMulticastMessage("Status:NEW_PSEUDONYM");
+                    statusServlet = netInterface.sendPOSTRequest(myUser.getPseudonym(), myUser.getMACAddress(), "newpseudo");
                 } else {
                     statusServlet = netInterface.sendPOSTRequest(myUser.getPseudonym(), myUser.getMACAddress(), "connected");
                 }
@@ -83,8 +83,12 @@ public class Controller {
                 jTextField1.setText("");
                 myUser.setPseudonym(null);
             } else {
-                // Sending and waiting to receive all conections (it can change)
-                netInterface.sendMulticastMessage("Status:CONNECTED");   
+                if(changePseudonym){
+                    netInterface.sendMulticastMessage("Status:NEW_PSEUDONYM");
+                } else {
+                    netInterface.sendMulticastMessage("Status:CONNECTED");   
+                }
+                // Waiting to receive all conections
                 try{ Thread.sleep(400); } catch (InterruptedException ex) {}
                 // Start chatGUI
                 jLabelMyPsudonym.setText(this.localPseudonym);
