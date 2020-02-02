@@ -88,31 +88,23 @@ public class Receiver implements Runnable{
                         String stringText = new String(bytePayload);
                         //System.out.println("Text Payload: " + stringText);
                         // **** Print Constructed Text Message **** //
-                        this.chatGUI.getController().receiverManagerGUI(this.chatGUI, stringPseudo, stringText, dateMsg);                                
+                        this.chatGUI.getController().receiverManagerGUI(this.chatGUI, stringPseudo, stringText, dateMsg, messageType);                                
                         //System.out.println(stringPseudo + ": " + stringText + "\n");                       
                         typeMsg = "t";
                         contentMsg = stringText;
                         
                         break;
                     case 'i':
-                        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-                        Date date = new Date();
                         BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytePayload));
-                        String path = "/home/javornik/Bureau/Photo-" + stringPseudo + "-" + dateFormat.format(date) + ".jpg";
+                        String path = "../../ReceivedImages/Photo-" + stringPseudo + "-" + dateMsg.toString().replaceAll("/", "-").replaceAll(" ", "-") + ".jpg";
                         ImageIO.write(image, "jpg", new File(path));
+                        
+                        this.chatGUI.getController().receiverManagerGUI(this.chatGUI, stringPseudo, "", dateMsg, messageType);
                         
                         typeMsg = "i";
                         contentMsg = path;
                         
                         //System.out.println("Receiving image message ");
-                        break;
-                    case 'f':
-                        path = "/home/javornik/Bureau";
-                        
-                        typeMsg = "f";
-                        contentMsg = path;
-                        
-                        System.out.println("Receiving file message");
                         break;
                     case 's':
                         //System.out.println("Receiving status message");
@@ -128,9 +120,6 @@ public class Receiver implements Runnable{
                         }
                         System.out.println(activeUserList.toString());
                         break;
-                    case 'e':
-                        System.out.println("Receiving end message");
-                        break;
                     default:
                         System.out.println("Error unrecognised Type");
                         break;
@@ -143,9 +132,9 @@ public class Receiver implements Runnable{
                     // Creating a new JSON file in the case this communication is new
                     // Current directory : /home/salinasg/Bureau/ChatSystem-POO/ChatSystem                    
                     String fileName = "Chat_" + senderMsg.getMACAddress().replace(":", "-") + ".json";
-                    JSONGenerator.generate("./JSONFiles/", fileName);
+                    JSONGenerator.generate("../../JSONFiles/", fileName);
                     MessageLog message = new MessageLog(typeMsg, senderMsg, receiverMsg, contentMsg, dateMsg);
-                    JSONWriter.write("./JSONFiles/" + fileName, message);
+                    JSONWriter.write("../../JSONFiles/" + fileName, message);
                 }
                 
                 socket.close();

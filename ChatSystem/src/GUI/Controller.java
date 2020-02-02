@@ -23,7 +23,12 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
+import static javax.swing.JFileChooser.FILES_ONLY;
 /**
  *
  * @author alexjavor
@@ -70,9 +75,6 @@ public class Controller {
                     statusServlet = netInterface.sendPOSTRequest(myUser.getPseudonym(), myUser.getMACAddress(), "connected");
                 }
             }
-            
-            // Waiting to receive all conections (it can change)
-            //try{ Thread.sleep(400); } catch (InterruptedException ex) {}
             
             //System.out.println("repeatedPseudo: " + repeatedPseudo);
             System.out.println("Servlet status: " + statusServlet);
@@ -135,12 +137,50 @@ public class Controller {
         }
     }
     
-    public void receiverManagerGUI(ChatGUI chatGUI, String stringPseudo, String stringText, DateLog dateMsg){
+    public void sendImageMessageChatGUI(ChatGUI chatGUI) {
+        if(chatGUI.getListActiveUsers().isSelectionEmpty()){
+            JOptionPane.showMessageDialog(null, "Please select an active user");
+        } else {
+            FileExplorerGUI fileExplorerGUI = new FileExplorerGUI(this);
+            JFileChooser chooser = fileExplorerGUI.getFileChooser();
+            //chooser.setCurrentDirectory(new java.io.File("."));
+            chooser.setDialogTitle("Select Image (.jpg)");
+            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            chooser.setAcceptAllFileFilterUsed(false);
+
+            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                File imagePath = chooser.getSelectedFile();
+                System.out.println("getSelectedFile() : " + chooser.getSelectedFile());
+                // Getting current date
+                DateLog dateMsg = DateLog.getCurrentDate();
+                // Sending message
+                netInterface.sendMessageToUser(chatGUI.getCurrentSenderGUI(), "i", imagePath.getAbsolutePath(), dateMsg);   
+                chatGUI.getTextAreaHistory().append(myUser.getPseudonym() + "(me): << Image: " + imagePath.getName() + " sended >> \n" + dateMsg + "\n\n");
+                chatGUI.getTextAreaHistory().setCaretPosition(chatGUI.getTextAreaHistory().getDocument().getLength());
+            } else {
+                System.out.println("No Selection ");
+            }
+        }
+    }
+    
+    public void receiverManagerGUI(ChatGUI chatGUI, String stringPseudo, String stringText, DateLog dateMsg, char messageType){
         User user = netInterface.getActiveUsers().getUserFromPseudo(stringPseudo);
         String selectedActiveUser = chatGUI.getListActiveUsers().getSelectedValue();
         if(selectedActiveUser == null ? user.getPseudonym() == null : selectedActiveUser.equals(user.getPseudonym())) {
-            String fullMessage = user.getPseudonym() + ": " + stringText + "\n" + dateMsg + "\n\n";
-            chatGUI.getTextAreaHistory().append(fullMessage);
+            switch (messageType) {
+                case 't':
+                    String fullMessage = user.getPseudonym() + ": " + stringText + "\n" + dateMsg + "\n\n";
+                    chatGUI.getTextAreaHistory().append(fullMessage);
+                    break;
+                case 'i':
+                    String imagePath = user.getPseudonym() + ": " + stringText + " \n" + dateMsg + "\n\n";
+                    chatGUI.getTextAreaHistory().append(imagePath);
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(null, "Unknown received type");
+                    break;
+            }
+            // Set the scrollbar down when a message is received
             chatGUI.getTextAreaHistory().setCaretPosition(chatGUI.getTextAreaHistory().getDocument().getLength());
         } else {
             String notificationMessage = "New message(s) from " + user.getPseudonym();
@@ -151,7 +191,7 @@ public class Controller {
     }
     
     private void loadHistoryFile(ChatGUI chatGUI, User selectedUser){
-        String jsonChatFile = "./JSONFiles/Chat_" + selectedUser.getMACAddress().replaceAll(":", "-") + ".json";
+        String jsonChatFile = "../../JSONFiles/Chat_" + selectedUser.getMACAddress().replaceAll(":", "-") + ".json";
         if(new File(jsonChatFile).isFile()){
             ArrayList<MessageLog> MessageLogList = read(jsonChatFile);
             String fullMessageLog = "";

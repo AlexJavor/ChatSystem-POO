@@ -6,6 +6,7 @@
 package GUI;
 
 import static GUI.Controller.firstConnection;
+import static MainChat.ChatSystem.myUser;
 import static MainChat.ChatSystem.netInterface;
 import java.awt.event.WindowAdapter;
 import javax.swing.JOptionPane;
@@ -40,6 +41,7 @@ public class PseudonymGUI extends javax.swing.JFrame {
             this.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                    netInterface.sendPOSTRequest(myUser.getPseudonym(), myUser.getMACAddress(), "disconnected");
                     netInterface.sendMulticastMessage("Status:DISCONNECTED");
                     System.out.println("Program Closed.");
                 }

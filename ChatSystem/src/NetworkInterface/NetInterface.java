@@ -39,7 +39,6 @@ public class NetInterface{
     public MulticastSender getMulticastSender() { return this.multiSnd; }
     
     // Methods
-    
     public String sendPOSTRequest(String name, String mac, String status) {
         return Java8HttpClient.POSTRequest(name, mac, status); 
     }
