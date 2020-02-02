@@ -48,6 +48,7 @@ public class ChatGUI extends javax.swing.JFrame {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                netInterface.sendPOSTRequest(myUser.getPseudonym(), myUser.getMACAddress(), "disconnected");
                 netInterface.sendMulticastMessage("Status:DISCONNECTED");
                 System.out.println("Program Closed.");
             }

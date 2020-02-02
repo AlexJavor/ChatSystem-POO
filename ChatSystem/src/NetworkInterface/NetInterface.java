@@ -6,6 +6,7 @@
 package NetworkInterface;
 import GUI.ChatGUI;
 import HistoryLogs.DateLog;
+import ServletClient.Java8HttpClient;
 /**
  *
  * @author salinasg
@@ -38,6 +39,11 @@ public class NetInterface{
     public MulticastSender getMulticastSender() { return this.multiSnd; }
     
     // Methods
+    
+    public String sendPOSTRequest(String name, String mac, String status) {
+        return Java8HttpClient.POSTRequest(name, mac, status); 
+    }
+    
     private void startReceiver(){
         this.threadReceiver = new Thread(this.rcv);
         this.threadReceiver.setName("Receiver");

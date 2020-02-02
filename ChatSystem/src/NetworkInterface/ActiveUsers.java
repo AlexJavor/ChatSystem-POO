@@ -21,6 +21,7 @@ public class ActiveUsers {
     // Attributes
     private ArrayList<User> userList;
     private ArrayList<Sender> senderList;
+    private ArrayList<User> userGloablList;
     private ChatGUI chatGUI;
     private int unicastPort;
     
@@ -28,6 +29,7 @@ public class ActiveUsers {
     public ActiveUsers(ChatGUI chatGUI, int unicastPort){
         this.userList = new ArrayList<>();
         this.senderList = new ArrayList<>();
+        this.userGloablList = new ArrayList<>();
         this.chatGUI = chatGUI;
         this.unicastPort = unicastPort;
     }
@@ -35,6 +37,7 @@ public class ActiveUsers {
     // *********************************** Getters ************************************** //
     public ArrayList<User> getActiveUsers(){ return this.userList; }
     public ArrayList<Sender> getActiveSenders(){ return this.senderList; }
+    public ArrayList<User> getGlobalActiveUsers() { return this.userGloablList; }
     
     public Sender getSenderFromIP(InetAddress ipAddr) {
         Sender snd;

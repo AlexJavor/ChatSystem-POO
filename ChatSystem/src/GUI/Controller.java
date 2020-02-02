@@ -48,6 +48,7 @@ public class Controller {
     public void confirmPseudonym(PseudonymGUI pseudonymGUI, ChatGUI chatGUI, java.awt.event.ActionEvent evt, javax.swing.JTextField jTextField1, javax.swing.JLabel jLabelMyPsudonym){
         
         repeatedPseudo = false;
+        String statusServlet = null;
         
         // Get pseudonym from text field
         this.localPseudonym = jTextField1.getText();
@@ -60,25 +61,29 @@ public class Controller {
             System.out.println("FirstConnection = " + firstConnection);
             if(firstConnection){
                 netInterface = new NetInterface(chatGUI);
-                netInterface.sendMulticastMessage("Status:CONNECTED");
+                statusServlet = netInterface.sendPOSTRequest(myUser.getPseudonym(), myUser.getMACAddress(), "connected");
                 firstConnection = false;
             } else {
                 if(changePseudonym){
                     netInterface.sendMulticastMessage("Status:NEW_PSEUDONYM");
                 } else {
-                    netInterface.sendMulticastMessage("Status:CONNECTED");
+                    statusServlet = netInterface.sendPOSTRequest(myUser.getPseudonym(), myUser.getMACAddress(), "connected");
                 }
             }
             
             // Waiting to receive all conections (it can change)
-            try{ Thread.sleep(400); } catch (InterruptedException ex) {}
+            //try{ Thread.sleep(400); } catch (InterruptedException ex) {}
             
-            System.out.println("repeatedPseudo: " + repeatedPseudo);
-            if(repeatedPseudo){
+            //System.out.println("repeatedPseudo: " + repeatedPseudo);
+            System.out.println("Servlet status: " + statusServlet);
+            if("KO".equals(statusServlet.trim())){
                 JOptionPane.showMessageDialog(null, "Pseudonym already in use, please choose another one");
                 jTextField1.setText("");
                 myUser.setPseudonym(null);
             } else {
+                // Sending and waiting to receive all conections (it can change)
+                netInterface.sendMulticastMessage("Status:CONNECTED");   
+                try{ Thread.sleep(400); } catch (InterruptedException ex) {}
                 // Start chatGUI
                 jLabelMyPsudonym.setText(this.localPseudonym);
                 pseudonymGUI.setVisible(false);
