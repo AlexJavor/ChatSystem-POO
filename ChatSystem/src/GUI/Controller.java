@@ -14,6 +14,7 @@ import MainChat.User;
 import NetworkInterface.ActiveUsers;
 import NetworkInterface.NetInterface;
 import NetworkInterface.Sender;
+import ServletClient.Java8HttpClient;
 import java.awt.event.ActionListener;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -26,6 +27,7 @@ import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.net.ConnectException;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import static javax.swing.JFileChooser.FILES_ONLY;
@@ -40,6 +42,7 @@ public class Controller {
     public static boolean firstConnection = true;
     private String localPseudonym;
     private boolean changePseudonym;
+    private Thread threadGetServlet;
     
     // Constructor
     public Controller(){
@@ -86,10 +89,11 @@ public class Controller {
                 if(changePseudonym){
                     netInterface.sendMulticastMessage("Status:NEW_PSEUDONYM");
                 } else {
-                    netInterface.sendMulticastMessage("Status:CONNECTED");   
+                    netInterface.sendMulticastMessage("Status:CONNECTED");
                 }
                 // Waiting to receive all conections
                 try{ Thread.sleep(400); } catch (InterruptedException ex) {}
+                
                 // Start chatGUI
                 jLabelMyPsudonym.setText(this.localPseudonym);
                 pseudonymGUI.setVisible(false);
@@ -167,6 +171,17 @@ public class Controller {
         }
     }
     
+    public void getAllUsersFromServletServer(ChatGUI chatGUI) {
+        // Get users form servlet server
+        Java8HttpClient.GETRequest();
+        String allActiveServletUsers = Java8HttpClient.servletRead();
+        
+        // Print users to the text area
+        ServletUsersGUI servletUsersGUI = new ServletUsersGUI(this);
+        servletUsersGUI.getTextAreaServletUsers().setText(allActiveServletUsers);
+        servletUsersGUI.setVisible(true); 
+    }
+    
     public void receiverManagerGUI(ChatGUI chatGUI, String stringPseudo, String stringText, DateLog dateMsg, char messageType){
         User user = netInterface.getActiveUsers().getUserFromPseudo(stringPseudo);
         String selectedActiveUser = chatGUI.getListActiveUsers().getSelectedValue();
@@ -219,6 +234,8 @@ public class Controller {
             chatGUI.getTextAreaHistory().setText("");     
         }
     }
+    
+    
 }
 
 

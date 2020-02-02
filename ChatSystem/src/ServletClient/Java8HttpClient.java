@@ -3,6 +3,7 @@ package ServletClient;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,7 +56,7 @@ public class Java8HttpClient {
 
             WriteHTMLinFile(content.toString());
 
-            System.out.println(content.toString().trim());
+            //System.out.println(content.toString().trim());
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -135,10 +136,41 @@ public class Java8HttpClient {
 
     private static void WriteHTMLinFile(final String content) {
         try {
-            final BufferedWriter writer = new BufferedWriter(new FileWriter("./HTML-File"));
+            final BufferedWriter writer = new BufferedWriter(new FileWriter("../../HTMLServlet/HTML-ServletFile"));
             writer.write(content);
             writer.close();
         } catch (final IOException e) {
+        }
+    }
+    
+    public static String servletRead() {
+        
+        String fullUsersText = "";
+        
+        try (FileReader reader = new FileReader("../../HTMLServlet/HTML-ServletFile");
+             
+             BufferedReader br = new BufferedReader(reader)) {
+
+            // read line by line
+            String line = "";
+            while (!line.equals("<!--")){
+                if ((line = br.readLine()) != null) {
+                    continue;
+                }
+                else {
+                    throw new IOException();
+                }
+            }
+            
+            while ((line = br.readLine()) != null && !line.equals("-->")) {
+                String[] cutted_line = line.split("-");
+                fullUsersText += "Pseudonym: " + cutted_line[0] + " | IP Address: " + cutted_line[1] + "\n";
+                //System.out.println("Pseudonym: " + cutted_line[0] + " | IP Address: " + cutted_line[1] + " | MAC Address: " + cutted_line[2]);
+            }
+            return fullUsersText;
+        } catch (IOException e) {
+            System.err.format("IOException: %s%n", e);
+            return null;
         }
     }
 }

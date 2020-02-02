@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>MyServlet</title>
+</head>
+<body>
+<h1>Page générée par le servlet !!</h1>
+<h2>Users connected right now :</h2>
+<ul><li>Pseudonym: Anthony | IP Address: 192.168.1.2 | MAC Address: B8:27:EB:5B:5C:74</li><li>Pseudonym: Alex | IP Address: 192.168.1.25 | MAC Address: D8:CB:8A:7E:88:DB</li></ul>
+</body>
+</html>
+
+<!--
+Anthony-192.168.1.2-B8:27:EB:5B:5C:74
+Alex-192.168.1.25-D8:CB:8A:7E:88:DB
+-->

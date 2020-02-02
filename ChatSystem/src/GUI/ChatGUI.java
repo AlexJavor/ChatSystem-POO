@@ -23,7 +23,6 @@ import javax.swing.text.DefaultCaret;
 public class ChatGUI extends javax.swing.JFrame {
     
     private Controller controller;
-    private FileExplorerGUI fileExplorerGUI;
     private DefaultListModel listModelActiveUsers;
     private DefaultListModel listModelOtherMessages;
     private Sender currentSender;
@@ -96,6 +95,7 @@ public class ChatGUI extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jListOtherMessages = new javax.swing.JList<>();
+        jButtonServletUsers = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -109,7 +109,7 @@ public class ChatGUI extends javax.swing.JFrame {
             }
         });
 
-        jLabel2.setText("Choose Active User:");
+        jLabel2.setText("Choose Active User from your Network:");
 
         jButtonSend.setText("Send");
         jButtonSend.addActionListener(new java.awt.event.ActionListener() {
@@ -151,6 +151,13 @@ public class ChatGUI extends javax.swing.JFrame {
 
         jScrollPane4.setViewportView(jListOtherMessages);
 
+        jButtonServletUsers.setText("Check users from the Servlet Server");
+        jButtonServletUsers.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonServletUsersActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -159,12 +166,13 @@ public class ChatGUI extends javax.swing.JFrame {
                 .addGap(33, 33, 33)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(55, 55, 55)
+                            .addComponent(jScrollPane4)
+                            .addComponent(jScrollPane3)
+                            .addComponent(jButtonServletUsers, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(69, 69, 69)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -179,7 +187,7 @@ public class ChatGUI extends javax.swing.JFrame {
                         .addComponent(myPsudonym)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonChangePseudo)))
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -200,14 +208,17 @@ public class ChatGUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButtonSendImage))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
+                        .addGap(12, 12, 12)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonServletUsers)
+                        .addGap(29, 29, 29)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
 
         pack();
@@ -230,6 +241,10 @@ public class ChatGUI extends javax.swing.JFrame {
         new PseudonymGUI(this.controller, this).setVisible(true);
         this.setVisible(false); 
     }//GEN-LAST:event_jButtonChangePseudoActionPerformed
+
+    private void jButtonServletUsersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonServletUsersActionPerformed
+        this.controller.getAllUsersFromServletServer(this);
+    }//GEN-LAST:event_jButtonServletUsersActionPerformed
     private void jList1ActiveUsersListSelectionListener(javax.swing.event.ListSelectionEvent evt) {
         if (!evt.getValueIsAdjusting()) {
             this.controller.selectActiveUserGUI(this);
@@ -240,6 +255,7 @@ public class ChatGUI extends javax.swing.JFrame {
     private javax.swing.JButton jButtonChangePseudo;
     private javax.swing.JButton jButtonSend;
     private javax.swing.JButton jButtonSendImage;
+    private javax.swing.JButton jButtonServletUsers;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
