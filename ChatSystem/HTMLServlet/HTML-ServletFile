@@ -7,11 +7,11 @@
 <body>
 <h1>Page générée par le servlet !!</h1>
 <h2>Users connected right now :</h2>
-<ul><li>Pseudonym: Alex | IP Address: 10.1.5.48 | MAC Address: 00:4E:01:9D:06:57</li><li>Pseudonym: Anthony | IP Address: 10.1.5.47 | MAC Address: 00:4E:01:9D:04:6B</li></ul>
+<ul><li>Pseudonym: Anthony | IP Address: 10.1.5.47 | MAC Address: 00:4E:01:9D:04:6B</li><li>Pseudonym: Alex | IP Address: 10.1.5.48 | MAC Address: 00:4E:01:9D:06:57</li></ul>
 </body>
 </html>
 
 <!--
-Alex-10.1.5.48-00:4E:01:9D:06:57
 Anthony-10.1.5.47-00:4E:01:9D:04:6B
+Alex-10.1.5.48-00:4E:01:9D:06:57
 -->
