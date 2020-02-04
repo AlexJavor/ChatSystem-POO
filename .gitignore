@@ -1,5 +1,5 @@
 /ChatSystem/build/*
-/ChatSystem/dist/
+/ChatSystem/HTMLServlet/*
 # Logs and databases #
 ######################
 *.json
