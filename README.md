@@ -5,7 +5,8 @@ We consider that using this application is as easy and intuitive as we could mak
 
 In order to run the application, yo have to download this Git repository, open a terminal in the git folder you created and run the  following command :
 ```
-java -jar ./ChatSystem/dist/JARFile/ChatSystem.jar
+cd ChatSystem/dist/JARFile/
+java -jar ChatSystem.jar
 ```
 
 ## Authors :
