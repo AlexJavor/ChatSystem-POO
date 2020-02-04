@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class Java8HttpClient {
 
-    private static final String url = "http://192.168.1.3:8080/Salinas-Javornik-Servlets/myservlet";
+    private static final String url = "https://srv-gei-tomcat.insa-toulouse.fr/Salinas-Javornik-Servlet/myservlet";
     private static HttpURLConnection con;
 /*
     public static void main(final String[] args) throws IOException {
